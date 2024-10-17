@@ -4,6 +4,7 @@ project(voxblox_msgs)
 # Find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
+find_package(std_msgs REQUIRED)
 
 # Specify the message files
 set(msg_files
@@ -23,6 +24,7 @@ set(srv_files
 rosidl_generate_interfaces(${PROJECT_NAME}
   ${msg_files}
   ${srv_files}
+  DEPENDENCIES std_msgs
 )
 
 # Export dependencies
