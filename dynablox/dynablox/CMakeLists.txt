@@ -9,6 +9,8 @@ endif()
 # Find ament_cmake and other necessary packages
 find_package(ament_cmake REQUIRED)
 find_package(PCL REQUIRED)
+find_package(pcl_conversions REQUIRED)
+find_package(pcl_ros REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(voxblox REQUIRED)
 
@@ -26,9 +28,21 @@ add_library(${PROJECT_NAME}
   src/evaluation/io_tools.cpp
 )
 
+# Specify include directories for the target
+target_include_directories(${PROJECT_NAME} PUBLIC
+  include
+  ${PCL_INCLUDE_DIRS}
+  ${pcl_conversions_INCLUDE_DIRS}
+  ${pcl_ros_INCLUDE_DIRS}
+  ${tf2_INCLUDE_DIRS}
+  ${voxblox_INCLUDE_DIRS}
+)
+
 # Link against other libraries if necessary
 target_link_libraries(${PROJECT_NAME}
-  PCL
+  ${PCL_LIBRARIES}
+  pcl_conversions
+  pcl_ros
   tf2
   voxblox
 )
@@ -47,7 +61,7 @@ install(DIRECTORY include/
 
 # Export the package
 ament_export_libraries(${PROJECT_NAME} ${PROJECT_NAME})
-ament_export_dependencies(PCL tf2 voxblox)
+ament_export_dependencies(PCL pcl_conversions pcl_ros tf2 voxblox)
 ament_export_include_directories(include)
 
 # Include the necessary ament macros
