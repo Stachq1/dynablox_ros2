@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="3">
-  <name>minkindr_ament</name>
+  <name>minkindr</name>
   <version>1.0.0</version>
-  <description>minkindr_ament</description>
+  <description>minkindr implementation using ament as build sysstem</description>
 
   <maintainer email="spiasecki@ethz.ch">Stanislaw Piasecki</maintainer>
   <license>BSD</license>
