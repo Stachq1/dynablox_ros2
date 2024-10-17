@@ -10,6 +10,7 @@ find_package(ament_cmake REQUIRED)
 
 find_package(Boost REQUIRED COMPONENTS system)
 find_package(Eigen3 REQUIRED)
+find_package(minkindr REQUIRED)
 find_package(OpenMP REQUIRED)
 find_package(Protobuf REQUIRED)
 find_package(PCL REQUIRED COMPONENTS common io)
@@ -71,6 +72,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/.
 ament_target_dependencies(${PROJECT_NAME}
   Boost
   Eigen3
+  minkindr
   PCL
   Protobuf
   Threads
@@ -93,7 +95,7 @@ install(
   DESTINATION include
 )
 
-ament_export_dependencies(Boost Eigen3 PCL Protobuf Threads)
+ament_export_dependencies(Boost Eigen3 minkindr PCL Protobuf Threads)
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME} ${PROJECT_NAME}_proto)
 
