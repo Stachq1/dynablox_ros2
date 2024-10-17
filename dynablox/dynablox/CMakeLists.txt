@@ -8,7 +8,7 @@ endif()
 
 # Find ament_cmake and other necessary packages
 find_package(ament_cmake REQUIRED)
-find_package(pcl_conversions REQUIRED)
+find_package(PCL REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(voxblox REQUIRED)
 
@@ -28,10 +28,9 @@ add_library(${PROJECT_NAME}
 
 # Link against other libraries if necessary
 target_link_libraries(${PROJECT_NAME}
-  ${rclcpp_LIBRARIES}
-  pcl_conversions::pcl_conversions
-  tf2::tf2
-  voxblox::voxblox
+  PCL
+  tf2
+  voxblox
 )
 
 # Install the library
@@ -48,7 +47,7 @@ install(DIRECTORY include/
 
 # Export the package
 ament_export_libraries(${PROJECT_NAME} ${PROJECT_NAME})
-ament_export_dependencies(pcl_conversions tf2 voxblox)
+ament_export_dependencies(PCL tf2 voxblox)
 ament_export_include_directories(include)
 
 # Include the necessary ament macros
