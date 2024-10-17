@@ -38,6 +38,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   ${voxblox_INCLUDE_DIRS}
 )
 
+# Add the Voxblox generated .pb.h files to include directories
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/..)
+
 # Link against other libraries if necessary
 target_link_libraries(${PROJECT_NAME}
   ${PCL_LIBRARIES}
