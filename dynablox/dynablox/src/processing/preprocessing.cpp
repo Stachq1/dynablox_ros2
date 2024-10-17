@@ -21,7 +21,7 @@ Preprocessing::Preprocessing(const Config& config)
     : config_(config.checkValid()) {}
 
 bool Preprocessing::processPointcloud(const sensor_msgs::PointCloud2::Ptr& msg,
-                                      const tf::StampedTransform T_M_S,
+                                      const tf2::StampedTransform T_M_S,
                                       Cloud& cloud,
                                       CloudInfo& cloud_info) const {
   // Convert to ROS msg to pcl cloud.
