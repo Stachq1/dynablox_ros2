@@ -63,6 +63,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
   ${Boost_INCLUDE_DIRS}
   ${Eigen3_INCLUDE_DIRS}
+  ${minkindr_INCLUDE_DIRS}
   ${PCL_INCLUDE_DIRS}
 )
 
