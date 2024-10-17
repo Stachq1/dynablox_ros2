@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     libyaml-cpp-dev \
     libboost-system-dev \
     libboost-thread-dev \
+    libxmlrpcpp-dev \
     protobuf-compiler \
     libpcl-dev \
     vim \
