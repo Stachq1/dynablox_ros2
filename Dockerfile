@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y \
     protobuf-compiler \
     libpcl-dev \
     vim \
+    ros-humble-pcl-ros \
     ros-humble-pcl-conversions \
     ros-humble-rviz2
 
