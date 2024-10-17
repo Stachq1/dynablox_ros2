@@ -9,6 +9,7 @@ COPY . /root/dynablox
 # Update the package list and install dependencies
 RUN apt-get update && apt-get install -y \
     libgoogle-glog-dev \
+    libgflags-dev \
     libyaml-cpp-dev \
     libboost-system-dev \
     libboost-thread-dev \
