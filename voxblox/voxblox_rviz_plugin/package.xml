@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>voxblox_rviz_plugin</name>
+  <version>0.0.1</version>
+  <description>RViz plugin for displaying incremental voxblox mesh messages.</description>
+
+  <maintainer email="ztaylorr@ethz.ch">Zachary Taylor</maintainer>
+  <license>BSD</license>
+  <author email="ztaylorr@ethz.ch">Zachary Taylor</author>
+
+  <!-- Build system for ROS 2 -->
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <!-- Dependencies -->
+  <depend>rviz_common</depend>
+  <depend>voxblox</depend>
+  <depend>voxblox_msgs</depend>
+
+  <!-- Export RViz plugin description -->
+  <export>
+    <rviz plugin="${prefix}/plugin_description.xml"/>
+  </export>
+</package>
