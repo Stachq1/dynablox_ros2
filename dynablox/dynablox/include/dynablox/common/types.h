@@ -4,7 +4,7 @@
 #include <utility>
 #include <vector>
 
-#include <pcl_ros/point_cloud.h>
+#include <pcl_ros/point_cloud.hpp>
 #include <voxblox/core/block.h>
 #include <voxblox/core/common.h>
 #include <voxblox/core/layer.h>

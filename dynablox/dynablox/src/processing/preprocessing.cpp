@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include <pcl_ros/transforms.h>
+#include <pcl_ros/transforms.hpp>
 
 namespace dynablox {
 
