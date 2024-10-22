@@ -8,14 +8,10 @@ endif()
 
 # Find ament_cmake and other necessary packages
 find_package(ament_cmake REQUIRED)
-find_package(PCL REQUIRED)
 find_package(pcl_conversions REQUIRED)
 find_package(pcl_ros REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(voxblox REQUIRED)
-
-# Include directories
-include_directories(include)
 
 # Add library
 add_library(${PROJECT_NAME}
@@ -29,9 +25,8 @@ add_library(${PROJECT_NAME}
 )
 
 # Specify include directories for the target
-target_include_directories(${PROJECT_NAME} PUBLIC
+include_directories(${PROJECT_NAME} PUBLIC
   include
-  ${PCL_INCLUDE_DIRS}
   ${pcl_conversions_INCLUDE_DIRS}
   ${pcl_ros_INCLUDE_DIRS}
   ${tf2_INCLUDE_DIRS}
@@ -42,8 +37,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/..)
 
 # Link against other libraries if necessary
-target_link_libraries(${PROJECT_NAME}
-  ${PCL_LIBRARIES}
+ament_target_dependencies(${PROJECT_NAME}
   pcl_conversions
   pcl_ros
   tf2

@@ -8,6 +8,7 @@ add_compile_options(-Wall)
 
 # Find necessary packages
 find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
 find_package(rviz_common REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(voxblox REQUIRED)
@@ -23,6 +24,9 @@ set(QT_LIBRARIES Qt5::Widgets)
 include_directories(
   include
   ${Qt5Widgets_INCLUDE_DIRS}
+  ${rviz_common_INCLUDE_DIRS}
+  ${rclcpp_INCLUDE_DIRS}
+  ${voxblox_INCLUDE_DIRS}
 )
 
 # Avoid Qt signals and slots defining "emit", "slots", etc.
@@ -46,11 +50,15 @@ add_library(${PROJECT_NAME} SHARED
 )
 
 # Link against necessary libraries
-target_link_libraries(${PROJECT_NAME}
-  ${QT_LIBRARIES}
+ament_target_dependencies(${PROJECT_NAME}
+  rclcpp
   rviz_common
   voxblox
   voxblox_msgs
+)
+
+target_link_libraries(${PROJECT_NAME}
+  ${QT_LIBRARIES}
 )
 
 # Install the plugin description XML

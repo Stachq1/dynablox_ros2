@@ -1,7 +1,7 @@
 #ifndef VOXBLOX_RVIZ_PLUGIN_VOXBLOX_MESH_VISUAL_H_
 #define VOXBLOX_RVIZ_PLUGIN_VOXBLOX_MESH_VISUAL_H_
 
-#include <OgreManualObject.h>
+#include <OGRE/OgreManualObject.h>
 
 #include <voxblox/core/block_hash.h>
 #include <voxblox_msgs/msg/mesh.hpp>

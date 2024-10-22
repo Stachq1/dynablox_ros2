@@ -12,6 +12,7 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <!-- Dependencies -->
+  <depend>rclcpp</depend>
   <depend>rviz_common</depend>
   <depend>voxblox</depend>
   <depend>voxblox_msgs</depend>

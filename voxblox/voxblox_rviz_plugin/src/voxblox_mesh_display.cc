@@ -5,7 +5,6 @@
 
 #include <tf2_ros/transform_listener.h>
 
-#include <rviz_common/frame_manager.hpp>
 #include <rviz_common/visualization_manager.hpp>
 #include <rclcpp/logging.hpp>
 
