@@ -13,7 +13,7 @@
 namespace voxblox {
 
 inline TsdfMap::Config getTsdfMapConfigFromRosParam(
-    const std::shared_ptr<rclcpp::Node>& node) {
+    const rclcpp::Node::SharedPtr& node) {
   TsdfMap::Config tsdf_config;
 
   double voxel_size = tsdf_config.tsdf_voxel_size;
@@ -35,7 +35,7 @@ inline TsdfMap::Config getTsdfMapConfigFromRosParam(
   return tsdf_config;
 }
 
-inline ICP::Config getICPConfigFromRosParam(const std::shared_ptr<rclcpp::Node>& node) {
+inline ICP::Config getICPConfigFromRosParam(const rclcpp::Node::SharedPtr& node) {
   ICP::Config icp_config;
 
   node->declare_parameter<double>("icp_min_match_ratio", icp_config.min_match_ratio);
@@ -55,7 +55,7 @@ inline ICP::Config getICPConfigFromRosParam(const std::shared_ptr<rclcpp::Node>&
   return icp_config;
 }
 
-inline TsdfIntegratorBase::Config getTsdfIntegratorConfigFromRosParam(const std::shared_ptr<rclcpp::Node>& node) {
+inline TsdfIntegratorBase::Config getTsdfIntegratorConfigFromRosParam(const rclcpp::Node::SharedPtr& node) {
     TsdfIntegratorBase::Config integrator_config;
 
     integrator_config.voxel_carving_enabled = true;
@@ -118,7 +118,7 @@ inline TsdfIntegratorBase::Config getTsdfIntegratorConfigFromRosParam(const std:
 
 
 inline MeshIntegratorConfig getMeshIntegratorConfigFromRosParam(
-    const std::shared_ptr<rclcpp::Node>& node) {
+    const rclcpp::Node::SharedPtr& node) {
   MeshIntegratorConfig mesh_integrator_config;
 
   node->declare_parameter<double>("mesh_min_weight", mesh_integrator_config.min_weight);
