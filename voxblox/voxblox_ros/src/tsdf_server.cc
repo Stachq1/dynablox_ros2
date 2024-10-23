@@ -222,7 +222,7 @@ void TsdfServer::getServerConfigFromRosParam(rclcpp::Node::SharedPtr& nh_private
 }
 
 void TsdfServer::processPointCloudMessageAndInsert(
-    const sensor_msgs::PointCloud2::Ptr& pointcloud_msg,
+    const sensor_msgs::msg::PointCloud2::Ptr& pointcloud_msg,
     const Transformation& T_G_C, const bool is_freespace_pointcloud) {
   // Convert the PCL pointcloud into our awesome format.
 
@@ -231,7 +231,7 @@ void TsdfServer::processPointCloudMessageAndInsert(
   bool has_intensity = false;
   for (size_t d = 0; d < pointcloud_msg->fields.size(); ++d) {
     if (pointcloud_msg->fields[d].name == std::string("rgb")) {
-      pointcloud_msg->fields[d].datatype = sensor_msgs::PointField::FLOAT32;
+      pointcloud_msg->fields[d].datatype = sensor_msgs::msg::PointField::FLOAT32;
       color_pointcloud = true;
     } else if (pointcloud_msg->fields[d].name == std::string("intensity")) {
       has_intensity = true;
@@ -240,7 +240,6 @@ void TsdfServer::processPointCloudMessageAndInsert(
 
   Pointcloud points_C;
   Colors colors;
-  //timing::Timer ptcloud_timer("ptcloud_preprocess");
 
   // Convert differently depending on RGB or I type.
   if (color_pointcloud) {
@@ -259,7 +258,6 @@ void TsdfServer::processPointCloudMessageAndInsert(
     pcl::fromROSMsg(*pointcloud_msg, pointcloud_pcl);
     convertPointcloud(pointcloud_pcl, color_map_, &points_C, &colors);
   }
-  //ptcloud_timer.Stop();
 
   Transformation T_G_C_refined = T_G_C;
   if (enable_icp_) {
@@ -272,8 +270,8 @@ void TsdfServer::processPointCloudMessageAndInsert(
         icp_->runICP(tsdf_map_->getTsdfLayer(), points_C,
                      icp_corrected_transform_ * T_G_C, &T_G_C_refined);
     if (verbose_) {
-      ROS_INFO("ICP refinement performed %zu successful update steps",
-               num_icp_updates);
+      RCLCPP_INFO(nh_private->get_logger(),
+                  "ICP refinement performed %zu successful update steps", num_icp_updates);
     }
     icp_corrected_transform_ = T_G_C_refined * T_G_C.inverse();
 
@@ -288,8 +286,9 @@ void TsdfServer::processPointCloudMessageAndInsert(
 
     // Publish transforms as both TF and message.
     tf::Transform icp_tf_msg, pose_tf_msg;
-    geometry_msgs::TransformStamped transform_msg;
+    geometry_msgs::msg::TransformStamped transform_msg;
 
+    // TODO: Requires to be transfered to TF2 (?)
     tf::transformKindrToTF(icp_corrected_transform_.cast<double>(),
                            &icp_tf_msg);
     tf::transformKindrToTF(T_G_C.cast<double>(), &pose_tf_msg);
@@ -304,30 +303,28 @@ void TsdfServer::processPointCloudMessageAndInsert(
 
     transform_msg.header.frame_id = world_frame_;
     transform_msg.child_frame_id = icp_corrected_frame_;
-    icp_transform_pub_.publish(transform_msg);
+    icp_transform_pub_->publish(transform_msg);
 
     icp_timer.Stop();
   }
 
   if (verbose_) {
-    ROS_INFO("Integrating a pointcloud with %lu points.", points_C.size());
+    RCLCPP_INFO(this->get_logger(), "Integrating a pointcloud with %lu points.", points_C.size());
   }
 
-  ros::WallTime start = ros::WallTime::now();
+  auto start = nh_private_->now();
   integratePointcloud(T_G_C_refined, points_C, colors, is_freespace_pointcloud);
-  ros::WallTime end = ros::WallTime::now();
+  auto end = nh_private_->now();
   if (verbose_) {
-    ROS_INFO("Finished integrating in %f seconds, have %lu blocks.",
-             (end - start).toSec(),
-             tsdf_map_->getTsdfLayer().getNumberOfAllocatedBlocks());
+    RCLCPP_INFO(this->get_logger(), "Finished integrating in %f seconds, have %lu blocks.",
+                  (end - start).seconds(),
+                  tsdf_map_->getTsdfLayer().getNumberOfAllocatedBlocks());
   }
 
-  //timing::Timer block_remove_timer("remove_distant_blocks");
   tsdf_map_->getTsdfLayerPtr()->removeDistantBlocks(
       T_G_C.getPosition(), max_block_distance_from_body_);
   mesh_layer_->clearDistantMesh(T_G_C.getPosition(),
                                 max_block_distance_from_body_);
-  //block_remove_timer.Stop();
 
   // Callback for inheriting classes.
   newPoseCallback(T_G_C);
