@@ -81,9 +81,9 @@ class TsdfServer {
   bool clearMapCallback(const std::shared_ptr<std_srvs::srv::Empty::Request> request,           // NOLINT
                         std::shared_ptr<std_srvs::srv::Empty::Response> response);              // NOLINT
   bool saveMapCallback(const std::shared_ptr<voxblox_msgs::srv::FilePath::Request> request,     // NOLINT
-                      std::shared_ptr<voxblox_msgs::srv::FilePath::Response> response);        // NOLINT
+                      std::shared_ptr<voxblox_msgs::srv::FilePath::Response> response);         // NOLINT
   bool loadMapCallback(const std::shared_ptr<voxblox_msgs::srv::FilePath::Request> request,     // NOLINT
-                      std::shared_ptr<voxblox_msgs::srv::FilePath::Response> response);        // NOLINT
+                      std::shared_ptr<voxblox_msgs::srv::FilePath::Response> response);         // NOLINT
   bool generateMeshCallback(const std::shared_ptr<std_srvs::srv::Empty::Request> request,       // NOLINT
                             std::shared_ptr<std_srvs::srv::Empty::Response> response);          // NOLINT
   bool publishPointcloudsCallback(const std::shared_ptr<std_srvs::srv::Empty::Request> request, // NOLINT

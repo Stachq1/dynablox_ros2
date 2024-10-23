@@ -13,7 +13,7 @@
   <depend>eigen_conversions</depend>
   <depend>geometry_msgs</depend>
   <depend>glog</depend>
-  <depend>tf</depend>
+  <depend>tf2</depend>
   <depend>tf_conversions</depend>
 
   <export>

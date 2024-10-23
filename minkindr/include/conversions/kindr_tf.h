@@ -2,7 +2,7 @@
 #define MINKINDR_CONVERSIONS_KINDR_TF_H
 
 #include <kindr/minimal/quat-transformation.h>
-#include <tf/transform_datatypes.h>
+#include <tf2/transform_datatypes.h>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
@@ -15,14 +15,14 @@ namespace tf {
 template <typename Scalar>
 void quaternionKindrToTF(
     const kindr::minimal::RotationQuaternionTemplate<Scalar>& kindr,
-    tf::Quaternion* tf_type) {
+    tf2::Quaternion* tf_type) {
   CHECK_NOTNULL(tf_type);
   quaternionEigenToTF(kindr.toImplementation(), *tf_type);
 }
 
 template <typename Scalar>
 void quaternionTFToKindr(
-    const tf::Quaternion& tf_type,
+    const tf2::Quaternion& tf_type,
     kindr::minimal::RotationQuaternionTemplate<Scalar>* kindr) {
   CHECK_NOTNULL(kindr);
   Eigen::Quaternion<Scalar> quat;
@@ -32,13 +32,13 @@ void quaternionTFToKindr(
 // Also the Eigen implementation version of this.
 template <typename Scalar>
 void quaternionKindrToTF(const Eigen::Quaternion<Scalar>& kindr,
-                         tf::Quaternion* tf_type) {
+                         tf2::Quaternion* tf_type) {
   CHECK_NOTNULL(tf_type);
   quaternionEigenToTF(kindr, *tf_type);
 }
 
 template <typename Scalar>
-void quaternionTFToKindr(const tf::Quaternion& tf_type,
+void quaternionTFToKindr(const tf2::Quaternion& tf_type,
                          Eigen::Quaternion<Scalar>* kindr) {
 
   CHECK_NOTNULL(kindr);
@@ -50,13 +50,13 @@ void quaternionTFToKindr(const tf::Quaternion& tf_type,
 // A wrapper for the relevant functions in eigen_conversions.
 template <typename Scalar>
 void vectorKindrToTF(const Eigen::Matrix<Scalar, 3, 1>& kindr,
-                     tf::Vector3* tf_type) {
+                     tf2::Vector3* tf_type) {
   CHECK_NOTNULL(tf_type);
   vectorEigenToTF(kindr, *tf_type);
 }
 
 template <typename Scalar>
-void vectorTFToKindr(const tf::Vector3& tf_type,
+void vectorTFToKindr(const tf2::Vector3& tf_type,
                      Eigen::Matrix<Scalar, 3, 1>* kindr) {
   CHECK_NOTNULL(kindr);
   Eigen::Matrix<double, 3, 1> kindr_double;
@@ -68,10 +68,10 @@ void vectorTFToKindr(const tf::Vector3& tf_type,
 template <typename Scalar>
 void transformKindrToTF(
     const kindr::minimal::QuatTransformationTemplate<Scalar>& kindr,
-    tf::Transform* tf_type) {
+    tf2::Transform* tf_type) {
   CHECK_NOTNULL(tf_type);
-  tf::Vector3 origin;
-  tf::Quaternion rotation;
+  tf2::Vector3 origin;
+  tf2::Quaternion rotation;
   vectorKindrToTF(kindr.getPosition(), &origin);
   quaternionKindrToTF(kindr.getRotation(), &rotation);
   tf_type->setOrigin(origin);
@@ -80,7 +80,7 @@ void transformKindrToTF(
 
 template <typename Scalar>
 void transformTFToKindr(
-    const tf::Transform& tf_type,
+    const tf2::Transform& tf_type,
     kindr::minimal::QuatTransformationTemplate<Scalar>* kindr) {
   CHECK_NOTNULL(kindr);
   Eigen::Matrix<Scalar, 3, 1> position;
@@ -102,12 +102,12 @@ void transformTFToKindr(
 template <typename Scalar>
 void poseKindrToTF(
     const kindr::minimal::QuatTransformationTemplate<Scalar>& kindr,
-    tf::Pose* tf_type) {
+    tf2::Pose* tf_type) {
   transformKindrToTF(kindr, tf_type);
 }
 
 template <typename Scalar>
-void poseTFToKindr(const tf::Pose& tf_type,
+void poseTFToKindr(const tf2::Pose& tf_type,
                    kindr::minimal::QuatTransformationTemplate<Scalar>* kindr) {
   transformTFToKindr(tf_type, kindr);
 }
