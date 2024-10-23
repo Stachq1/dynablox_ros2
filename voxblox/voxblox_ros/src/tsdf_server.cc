@@ -152,7 +152,7 @@ void TsdfServer::getServerConfigFromRosParam(rclcpp::Node::SharedPtr& nh_private
   double min_time_between_msgs_sec = 0.0;
   nh_private->declare_parameter("min_time_between_msgs_sec", 0.0);
   nh_private->get_parameter("min_time_between_msgs_sec", min_time_between_msgs_sec);
-  min_time_between_msgs_.fromSec(min_time_between_msgs_sec);
+  min_time_between_msgs_ = rclcpp::Duration(min_time_between_msgs_sec); // Very likely wrong
 
   nh_private->declare_parameter("max_block_distance_from_body", std::numeric_limits<FloatingPoint>::max());
   nh_private->get_parameter("max_block_distance_from_body", max_block_distance_from_body_);
