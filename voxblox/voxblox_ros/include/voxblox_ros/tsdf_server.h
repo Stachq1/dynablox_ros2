@@ -11,10 +11,10 @@
 #include <pcl_conversions/pcl_conversions.h>
 #include <pcl_ros/point_cloud.h>
 #include <ros/ros.h>
-#include <sensor_msgs/PointCloud2.h>
-#include <std_srvs/Empty.h>
+#include <sensor_msgs/msg/PointCloud2.h>
+#include <std_srvs/srv/Empty.h>
 #include <tf/transform_broadcaster.h>
-#include <visualization_msgs/MarkerArray.h>
+#include <visualization_msgs/msg/MarkerArray.h>
 
 #include <voxblox/alignment/icp.h>
 #include <voxblox/core/tsdf_map.h>
@@ -23,8 +23,8 @@
 #include <voxblox/io/mesh_ply.h>
 #include <voxblox/mesh/mesh_integrator.h>
 #include <voxblox/utils/color_maps.h>
-#include <voxblox_msgs/FilePath.h>
-#include <voxblox_msgs/Mesh.h>
+#include <voxblox_msgs/srv/FilePath.h>
+#include <voxblox_msgs/msg/Mesh.h>
 
 #include "voxblox_ros/mesh_vis.h"
 #include "voxblox_ros/ptcloud_vis.h"
@@ -38,22 +38,21 @@ class TsdfServer {
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  TsdfServer(const ros::NodeHandle& nh, const ros::NodeHandle& nh_private);
-  TsdfServer(const ros::NodeHandle& nh, const ros::NodeHandle& nh_private,
+  TsdfServer(const rclcpp::Node::SharedPtr& nh, const rclcpp::Node::SharedPtr& nh_private);
+  TsdfServer(const rclcpp::Node::SharedPtr& nh, const rclcpp::Node::SharedPtr& nh_private,
              const TsdfMap::Config& config,
              const TsdfIntegratorBase::Config& integrator_config,
              const MeshIntegratorConfig& mesh_config);
   virtual ~TsdfServer() {}
 
-  void getServerConfigFromRosParam(const ros::NodeHandle& nh_private);
+  void getServerConfigFromRosParam(const rclcpp::Node::SharedPtr& nh_private);
 
-  void insertPointcloud(const sensor_msgs::PointCloud2::Ptr& pointcloud);
+  void insertPointcloud(const sensor_msgs::msg::PointCloud2::Ptr& pointcloud);
 
-  void insertFreespacePointcloud(
-      const sensor_msgs::PointCloud2::Ptr& pointcloud);
+  void insertFreespacePointcloud(const sensor_msgs::msg::PointCloud2::Ptr& pointcloud);
 
   virtual void processPointCloudMessageAndInsert(
-      const sensor_msgs::PointCloud2::Ptr& pointcloud_msg,
+      const sensor_msgs::msg::PointCloud2::Ptr& pointcloud_msg,
       const Transformation& T_G_C, const bool is_freespace_pointcloud);
 
   void integratePointcloud(const Transformation& T_G_C,
@@ -79,22 +78,18 @@ class TsdfServer {
   virtual bool saveMap(const std::string& file_path);
   virtual bool loadMap(const std::string& file_path);
 
-  bool clearMapCallback(std_srvs::Empty::Request& request,           // NOLINT
-                        std_srvs::Empty::Response& response);        // NOLINT
-  bool saveMapCallback(voxblox_msgs::FilePath::Request& request,     // NOLINT
-                       voxblox_msgs::FilePath::Response& response);  // NOLINT
-  bool loadMapCallback(voxblox_msgs::FilePath::Request& request,     // NOLINT
-                       voxblox_msgs::FilePath::Response& response);  // NOLINT
-  bool generateMeshCallback(std_srvs::Empty::Request& request,       // NOLINT
-                            std_srvs::Empty::Response& response);    // NOLINT
-  bool publishPointcloudsCallback(
-      std_srvs::Empty::Request& request,                             // NOLINT
-      std_srvs::Empty::Response& response);                          // NOLINT
-  bool publishTsdfMapCallback(std_srvs::Empty::Request& request,     // NOLINT
-                              std_srvs::Empty::Response& response);  // NOLINT
-
-  void updateMeshEvent(const ros::TimerEvent& event);
-  void publishMapEvent(const ros::TimerEvent& event);
+  bool clearMapCallback(const std::shared_ptr<std_srvs::srv::Empty::Request> request,           // NOLINT
+                        std::shared_ptr<std_srvs::srv::Empty::Response> response);              // NOLINT
+  bool saveMapCallback(const std::shared_ptr<voxblox_msgs::srv::FilePath::Request> request,     // NOLINT
+                      std::shared_ptr<voxblox_msgs::srv::FilePath::Response> response);        // NOLINT
+  bool loadMapCallback(const std::shared_ptr<voxblox_msgs::srv::FilePath::Request> request,     // NOLINT
+                      std::shared_ptr<voxblox_msgs::srv::FilePath::Response> response);        // NOLINT
+  bool generateMeshCallback(const std::shared_ptr<std_srvs::srv::Empty::Request> request,       // NOLINT
+                            std::shared_ptr<std_srvs::srv::Empty::Response> response);          // NOLINT
+  bool publishPointcloudsCallback(const std::shared_ptr<std_srvs::srv::Empty::Request> request, // NOLINT
+                                  std::shared_ptr<std_srvs::srv::Empty::Response> response);    // NOLINT
+  bool publishTsdfMapCallback(const std::shared_ptr<std_srvs::srv::Empty::Request> request,     // NOLINT
+                              std::shared_ptr<std_srvs::srv::Empty::Response> response);        // NOLINT
 
   std::shared_ptr<TsdfMap> getTsdfMapPtr() { return tsdf_map_; }
   std::shared_ptr<const TsdfMap> getTsdfMapPtr() const { return tsdf_map_; }
@@ -117,7 +112,7 @@ class TsdfServer {
   virtual void clear();
 
   /// Overwrites the layer with what's coming from the topic!
-  void tsdfMapCallback(const voxblox_msgs::Layer& layer_msg);
+  void tsdfMapCallback(const voxblox_msgs::msg::Layer& layer_msg);
 
  protected:
   /**
@@ -125,8 +120,8 @@ class TsdfServer {
    * the queue.
    */
   bool getNextPointcloudFromQueue(
-      std::queue<sensor_msgs::PointCloud2::Ptr>* queue,
-      sensor_msgs::PointCloud2::Ptr* pointcloud_msg, Transformation* T_G_C);
+      std::queue<sensor_msgs::msg::PointCloud2::Ptr>* queue,
+      sensor_msgs::msg::PointCloud2::Ptr* pointcloud_msg, Transformation* T_G_C);
 
   ros::NodeHandle nh_;
   ros::NodeHandle nh_private_;
