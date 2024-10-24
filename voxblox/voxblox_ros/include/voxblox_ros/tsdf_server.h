@@ -12,7 +12,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/point_cloud2.h>
 #include <std_srvs/srv/empty.h>
-#include <tf2/transform_broadcaster.h>
+#include <tf2_ros/transform_broadcaster.h>
 #include <visualization_msgs/msg/marker_array.h>
 
 #include <voxblox/alignment/icp.h>
@@ -153,7 +153,7 @@ class TsdfServer {
   rclcpp::Service<std_srvs::srv::Empty>::SharedPtr publish_tsdf_map_srv_;
 
   /// Tools for broadcasting TFs.
-  tf2::TransformBroadcaster tf_broadcaster_;
+  tf2_ros::TransformBroadcaster tf_broadcaster_;
 
   // Timers.
   rclcpp::WallTimer update_mesh_timer_;

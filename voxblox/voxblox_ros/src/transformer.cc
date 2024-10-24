@@ -11,7 +11,6 @@ Transformer::Transformer(const rclcpp::Node::SharedPtr& nh,
       nh_private_(nh_private),
       world_frame_("world"),
       sensor_frame_(""),
-      use_tf_transforms_(true),
       timestamp_tolerance_ns_(1000000) {
   this->declare_parameter<std::string>("world_frame", world_frame_);
   this->get_parameter("world_frame", world_frame_);
