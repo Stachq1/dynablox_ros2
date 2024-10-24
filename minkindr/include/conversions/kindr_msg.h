@@ -5,10 +5,6 @@
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-#include <eigen_conversions/eigen_msg.h>
-#include <geometry_msgs/msg/point.h>
-#include <geometry_msgs/msg/pose.h>
-#include <geometry_msgs/msg/poseStamped.h>
 #include <geometry_msgs/msg/quaternion.h>
 #include <geometry_msgs/msg/transform.h>
 #include <geometry_msgs/msg/vector3.h>
@@ -16,7 +12,21 @@
 #include <kindr/minimal/quat-transformation.h>
 #include <kindr/minimal/transform-2d.h>
 
-namespace tf {
+namespace tf2 {
+
+// Function calls copied from eigen_conversions due to absence of the package in ROS 2
+void vectorEigenToMsg(const Eigen::Vector3d &e, geometry_msgs::msg::Vector3 &m) {
+  m.x = e(0);
+  m.y = e(1);
+  m.z = e(2);
+}
+
+void quaternionEigenToMsg(const Eigen::Quaterniond &e, geometry_msgs::msg::Quaternion &m) {
+  m.x = e.x();
+  m.y = e.y();
+  m.z = e.z();
+  m.w = e.w();
+}
 
 // A wrapper for the relevant functions in eigen_conversions.
 template <typename Scalar>
