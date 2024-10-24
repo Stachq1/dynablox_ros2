@@ -38,6 +38,18 @@ void quaternionMsgToEigen(const geometry_msgs::msg::Quaternion &m, Eigen::Quater
   e = Eigen::Quaterniond(m.w, m.x, m.y, m.z);
 }
 
+void pointEigenToMsg(const Eigen::Vector3d &e, geometry_msgs::msg::Point &m) {
+  m.x = e(0);
+  m.y = e(1);
+  m.z = e(2);
+}
+
+void pointMsgToEigen(const geometry_msgs::msg::Point &m, Eigen::Vector3d &e) {
+  e(0) = m.x;
+  e(1) = m.y;
+  e(2) = m.z;
+}
+
 // A wrapper for the relevant functions in eigen_conversions.
 template <typename Scalar>
 void quaternionKindrToMsg(
@@ -57,7 +69,7 @@ void quaternionKindrToMsg(
 
 template <typename Scalar>
 void quaternionMsgToKindr(
-    const geometry_msgs::Quaternion& msg,
+    const geometry_msgs::msg::Quaternion& msg,
     kindr::minimal::RotationQuaternionTemplate<Scalar>* kindr) {
   CHECK_NOTNULL(kindr);
   Eigen::Quaternion<Scalar> quat;
@@ -67,7 +79,7 @@ void quaternionMsgToKindr(
 
 template <typename Scalar>
 void quaternionMsgToKindr(
-    const geometry_msgs::Quaternion& msg, Eigen::Quaternion<Scalar>* kindr) {
+    const geometry_msgs::msg::Quaternion& msg, Eigen::Quaternion<Scalar>* kindr) {
   CHECK_NOTNULL(kindr);
   Eigen::Quaternion<double> kindr_double;
   quaternionMsgToEigen(msg, kindr_double);
