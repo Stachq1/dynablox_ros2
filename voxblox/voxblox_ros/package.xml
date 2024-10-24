@@ -14,7 +14,6 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <depend>cv_bridge</depend>
   <depend>minkindr</depend>
   <depend>pcl_conversions</depend>
   <depend>pcl_ros</depend>
@@ -22,6 +21,5 @@
   <depend>tf2</depend>
   <depend>voxblox</depend>
   <depend>voxblox_msgs</depend>
-  <depend>voxblox_rviz_plugin</depend>
 
 </package>

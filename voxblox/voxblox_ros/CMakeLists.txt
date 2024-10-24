@@ -6,7 +6,6 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(tf2 REQUIRED)
-find_package(cv_bridge REQUIRED)
 find_package(pcl_conversions REQUIRED)
 find_package(pcl_ros REQUIRED)
 find_package(gflags REQUIRED)
@@ -32,7 +31,6 @@ ament_target_dependencies(${PROJECT_NAME}
   rclcpp
   sensor_msgs
   tf2
-  cv_bridge
   pcl_conversions
   pcl_ros
   gflags
@@ -69,7 +67,7 @@ install(DIRECTORY include/
 # EXPORT #
 #############
 
-ament_export_dependencies(rclcpp sensor_msgs tf2 cv_bridge pcl_conversions pcl_ros gflags voxblox voxblox_msgs)
+ament_export_dependencies(rclcpp sensor_msgs tf2 pcl_conversions pcl_ros gflags voxblox voxblox_msgs)
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
 
