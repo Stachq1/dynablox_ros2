@@ -11,59 +11,6 @@
 
 namespace tf {
 
-// A wrapper for the relevant functions in eigen_conversions.
-template <typename Scalar>
-void quaternionKindrToTF(
-    const kindr::minimal::RotationQuaternionTemplate<Scalar>& kindr,
-    tf2::Quaternion* tf_type) {
-  CHECK_NOTNULL(tf_type);
-  quaternionEigenToTF(kindr.toImplementation(), *tf_type);
-}
-
-template <typename Scalar>
-void quaternionTFToKindr(
-    const tf2::Quaternion& tf_type,
-    kindr::minimal::RotationQuaternionTemplate<Scalar>* kindr) {
-  CHECK_NOTNULL(kindr);
-  Eigen::Quaternion<Scalar> quat;
-  quaternionTFToEigen(tf_type, quat);
-  *kindr = kindr::minimal::RotationQuaternionTemplate<Scalar>(quat);
-}
-// Also the Eigen implementation version of this.
-template <typename Scalar>
-void quaternionKindrToTF(const Eigen::Quaternion<Scalar>& kindr,
-                         tf2::Quaternion* tf_type) {
-  CHECK_NOTNULL(tf_type);
-  quaternionEigenToTF(kindr, *tf_type);
-}
-
-template <typename Scalar>
-void quaternionTFToKindr(const tf2::Quaternion& tf_type,
-                         Eigen::Quaternion<Scalar>* kindr) {
-
-  CHECK_NOTNULL(kindr);
-  Eigen::Quaterniond kindr_double;
-  quaternionTFToEigen(tf_type, kindr_double);
-  *kindr = kindr_double.cast<Scalar>();
-}
-
-// A wrapper for the relevant functions in eigen_conversions.
-template <typename Scalar>
-void vectorKindrToTF(const Eigen::Matrix<Scalar, 3, 1>& kindr,
-                     tf2::Vector3* tf_type) {
-  CHECK_NOTNULL(tf_type);
-  vectorEigenToTF(kindr, *tf_type);
-}
-
-template <typename Scalar>
-void vectorTFToKindr(const tf2::Vector3& tf_type,
-                     Eigen::Matrix<Scalar, 3, 1>* kindr) {
-  CHECK_NOTNULL(kindr);
-  Eigen::Matrix<double, 3, 1> kindr_double;
-  vectorTFToEigen(tf_type, kindr_double);
-  *kindr = kindr_double.cast<Scalar>();
-}
-
 // Convert a kindr::minimal::QuatTransformation to a geometry_msgs::Transform.
 template <typename Scalar>
 void transformKindrToTF(
@@ -96,20 +43,6 @@ void transformTFToKindr(
 
   *kindr =
       kindr::minimal::QuatTransformationTemplate<Scalar>(rotation, position);
-}
-
-// Convert a kindr::minimal::QuatTransformation to a 6 DoF geometry msgs pose.
-template <typename Scalar>
-void poseKindrToTF(
-    const kindr::minimal::QuatTransformationTemplate<Scalar>& kindr,
-    tf2::Pose* tf_type) {
-  transformKindrToTF(kindr, tf_type);
-}
-
-template <typename Scalar>
-void poseTFToKindr(const tf2::Pose& tf_type,
-                   kindr::minimal::QuatTransformationTemplate<Scalar>* kindr) {
-  transformTFToKindr(tf_type, kindr);
 }
 
 }  // namespace tf
