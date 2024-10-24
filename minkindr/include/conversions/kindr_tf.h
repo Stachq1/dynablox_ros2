@@ -98,20 +98,6 @@ void transformTFToKindr(
       kindr::minimal::QuatTransformationTemplate<Scalar>(rotation, position);
 }
 
-// Convert a kindr::minimal::QuatTransformation to a 6 DoF geometry msgs pose.
-template <typename Scalar>
-void poseKindrToTF(
-    const kindr::minimal::QuatTransformationTemplate<Scalar>& kindr,
-    tf2::Pose* tf_type) {
-  transformKindrToTF(kindr, tf_type);
-}
-
-template <typename Scalar>
-void poseTFToKindr(const tf2::Pose& tf_type,
-                   kindr::minimal::QuatTransformationTemplate<Scalar>* kindr) {
-  transformTFToKindr(tf_type, kindr);
-}
-
 }  // namespace tf
 
 #endif  // MINKINDR_CONVERSIONS_KINDR_TF_H
