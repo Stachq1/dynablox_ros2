@@ -12,7 +12,7 @@ Transformer::Transformer(const rclcpp::Node::SharedPtr& nh,
       world_frame_("world"),
       sensor_frame_(""),
       timestamp_tolerance_ns_(1000000),
-      tf_buffer_(rclcpp::Duration(10)), // not sure if 100% right
+      tf_buffer_(nh_private_->get_clock()), // not sure if 100% right
       tf_listener_(tf_buffer_) {
   nh_private_->declare_parameter<std::string>("world_frame", world_frame_);
   nh_private_->get_parameter("world_frame", world_frame_);
@@ -41,7 +41,7 @@ bool Transformer::lookupTransformTf(const std::string& from_frame,
                                     const rclcpp::Time& timestamp,
                                     Transformation* transform) {
   CHECK_NOTNULL(transform);
-  tf2::Transform tf_transform;
+  geometry_msgs::msg::TransformStamped tf_transform;
   rclcpp::Time time_to_lookup = timestamp;
 
   // Allow overwriting the TF frame for the sensor.
@@ -57,14 +57,14 @@ bool Transformer::lookupTransformTf(const std::string& from_frame,
   }
 
   try {
-    tf_buffer_.lookupTransform(to_frame, from_frame_modified, time_to_lookup, tf_transform);
+    tf_transform = tf_buffer_.lookupTransform(to_frame, from_frame_modified, time_to_lookup, rclcpp::Duration(1, 0));
   } catch (tf2::TransformException& ex) {  // NOLINT
     RCLCPP_ERROR_STREAM(nh_private_->get_logger(),
                         "Error getting TF transform from sensor data: " << ex.what());
     return false;
   }
 
-  tf2::transformTFToKindr(tf_transform, transform);
+  tf2::transformMsgToKindr(tf_transform.transform, transform);
   return true;
 }
 
