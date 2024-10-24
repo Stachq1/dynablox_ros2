@@ -1,7 +1,7 @@
 #include "voxblox_ros/transformer.h"
 
-#include <minkindr/conversions/kindr_msg.h>
-#include <minkindr/conversions/kindr_tf.h>
+#include <minkindr/kindr_msg.h>
+#include <minkindr/kindr_tf.h>
 
 namespace voxblox {
 

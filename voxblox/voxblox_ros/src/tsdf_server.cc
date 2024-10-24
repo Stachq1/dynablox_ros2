@@ -1,7 +1,7 @@
 #include "voxblox_ros/tsdf_server.h"
 
-#include <minkindr/conversions/kindr_msg.h>
-#include <minkindr/conversions/kindr_tf.h>
+#include <minkindr/kindr_msg.h>
+#include <minkindr/kindr_tf.h>
 #include <voxblox/integrator/projective_tsdf_integrator.h>
 
 #include "voxblox_ros/conversions.h"
