@@ -443,7 +443,7 @@ void TsdfServer::publishTsdfSurfacePoints() {
 
 void TsdfServer::publishTsdfOccupiedNodes() {
   // Create a pointcloud with distance = intensity.
-  visualization_msgs::MarkerArray marker_array;
+  visualization_msgs::msg::MarkerArray marker_array;
   createOccupancyBlocksFromTsdfLayer(tsdf_map_->getTsdfLayer(), world_frame_,
                                      &marker_array);
   occupancy_marker_pub_->publish(marker_array);

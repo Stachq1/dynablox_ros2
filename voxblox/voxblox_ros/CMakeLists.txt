@@ -10,6 +10,7 @@ find_package(std_srvs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(pcl_conversions REQUIRED)
+find_package(visualization_msgs REQUIRED)
 find_package(voxblox REQUIRED)
 find_package(voxblox_msgs REQUIRED)
 
@@ -36,6 +37,7 @@ ament_target_dependencies(${PROJECT_NAME}
   tf2
   tf2_ros
   pcl_conversions
+  visualization_msgs
   voxblox
   voxblox_msgs
 )
@@ -69,7 +71,7 @@ install(DIRECTORY include/
 # EXPORT #
 #############
 
-ament_export_dependencies(minkindr rclcpp sensor_msgs std_srvs tf2 tf2_ros pcl_conversions voxblox voxblox_msgs)
+ament_export_dependencies(minkindr rclcpp sensor_msgs std_srvs tf2 tf2_ros pcl_conversions visualization_msgs voxblox voxblox_msgs)
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
 

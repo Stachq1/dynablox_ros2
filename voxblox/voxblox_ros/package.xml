@@ -21,6 +21,7 @@
   <depend>std_srvs</depend>
   <depend>tf2</depend>
   <depend>tf2_ros</depend>
+  <depend>visualization_msgs</depend>
   <depend>voxblox</depend>
   <depend>voxblox_msgs</depend>
 
