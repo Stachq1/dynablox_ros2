@@ -27,7 +27,7 @@
 #include <algorithm>
 #include <limits>
 
-#include <eigen_conversions/eigen_msg.h>
+#include <minkindr/kindr_msg.h>
 #include <visualization_msgs/msg/marker.h>
 
 #include <voxblox/core/common.h>
@@ -166,7 +166,7 @@ inline void generateVoxbloxMeshMsg(MeshLayer* mesh_layer, ColorMode color_mode,
   for (const BlockIndex& block_index : mesh_indices) {
     Mesh::Ptr mesh = mesh_layer->getMeshPtrByIndex(block_index);
 
-    voxblox_msgs::MeshBlock mesh_block;
+    voxblox_msgs::msg::MeshBlock mesh_block;
     mesh_block.index[0] = block_index.x();
     mesh_block.index[1] = block_index.y();
     mesh_block.index[2] = block_index.z();
@@ -272,7 +272,7 @@ inline void fillMarkerWithMesh(const MeshLayer::ConstPtr& mesh_layer,
 
     for (size_t i = 0u; i < mesh->vertices.size(); i++) {
       geometry_msgs::msg::Point point_msg;
-      tf::pointEigenToMsg(mesh->vertices[i].cast<double>(), point_msg);
+      tf2::pointEigenToMsg(mesh->vertices[i].cast<double>(), point_msg);
       marker->points.push_back(point_msg);
       marker->colors.push_back(getVertexColor(mesh, color_mode, i));
     }
