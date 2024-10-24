@@ -11,16 +11,18 @@ Transformer::Transformer(const rclcpp::Node::SharedPtr& nh,
       nh_private_(nh_private),
       world_frame_("world"),
       sensor_frame_(""),
-      timestamp_tolerance_ns_(1000000) {
-  this->declare_parameter<std::string>("world_frame", world_frame_);
-  this->get_parameter("world_frame", world_frame_);
-  this->declare_parameter<std::string>("sensor_frame", sensor_frame_);
-  this->get_parameter("sensor_frame", sensor_frame_);
+      timestamp_tolerance_ns_(1000000),
+      tf_buffer_(),
+      tf_listener_(tf_buffer_) {
+  nh_private_->declare_parameter<std::string>("world_frame", world_frame_);
+  nh_private_->get_parameter("world_frame", world_frame_);
+  nh_private_->declare_parameter<std::string>("sensor_frame", sensor_frame_);
+  nh_private_->get_parameter("sensor_frame", sensor_frame_);
 
   const double kNanoSecondsInSecond = 1.0e9;
   double timestamp_tolerance_sec = timestamp_tolerance_ns_ / kNanoSecondsInSecond;
-  this->declare_parameter<double>("timestamp_tolerance_sec", timestamp_tolerance_sec);
-  this->get_parameter("timestamp_tolerance_sec", timestamp_tolerance_sec);
+  nh_private_->declare_parameter<double>("timestamp_tolerance_sec", timestamp_tolerance_sec);
+  nh_private_->get_parameter("timestamp_tolerance_sec", timestamp_tolerance_sec);
   timestamp_tolerance_ns_ =
       static_cast<int64_t>(timestamp_tolerance_sec * kNanoSecondsInSecond);
 }
@@ -64,7 +66,7 @@ bool Transformer::lookupTransformTf(const std::string& from_frame,
     return false;
   }
 
-  tf::transformTFToKindr(tf_transform, transform);
+  tf2::transformTFToKindr(tf_transform, transform);
   return true;
 }
 
