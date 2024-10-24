@@ -11,6 +11,8 @@ find_package(glog REQUIRED)
 find_package(Threads REQUIRED)
 find_package(tf2 REQUIRED)
 
+include_directories(include)
+
 # Install headers
 install(
   DIRECTORY include/
