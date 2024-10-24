@@ -6,7 +6,6 @@
 
 #include <eigen_conversions/eigen_msg.h>
 #include <pcl/point_types.h>
-#include <pcl_ros/point_cloud.h>
 #include <visualization_msgs/msg/marker.h>
 #include <visualization_msgs/msg/marker_array.h>
 
