@@ -3,12 +3,13 @@ project(voxblox_ros)
 
 # Find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(minkindr REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(pcl_conversions REQUIRED)
-find_package(gflags REQUIRED)
 find_package(voxblox REQUIRED)
 find_package(voxblox_msgs REQUIRED)
 
@@ -28,12 +29,13 @@ add_library(${PROJECT_NAME}
 )
 
 ament_target_dependencies(${PROJECT_NAME}
+  minkindr
   rclcpp
   sensor_msgs
+  std_srvs
   tf2
   tf2_ros
   pcl_conversions
-  gflags
   voxblox
   voxblox_msgs
 )
@@ -47,9 +49,9 @@ add_executable(tsdf_server
 )
 target_link_libraries(tsdf_server ${PROJECT_NAME})
 
-#############
+################
 # INSTALLATION #
-#############
+################
 
 # Install targets
 install(TARGETS
@@ -67,7 +69,7 @@ install(DIRECTORY include/
 # EXPORT #
 #############
 
-ament_export_dependencies(rclcpp sensor_msgs tf2 tf2_ros pcl_conversions gflags voxblox voxblox_msgs)
+ament_export_dependencies(minkindr rclcpp sensor_msgs std_srvs tf2 tf2_ros pcl_conversions voxblox voxblox_msgs)
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
 

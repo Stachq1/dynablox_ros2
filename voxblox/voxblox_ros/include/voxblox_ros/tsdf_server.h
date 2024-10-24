@@ -9,7 +9,7 @@
 #include <pcl/filters/filter.h>
 #include <pcl/point_types.h>
 #include <pcl_conversions/pcl_conversions.h>
-#include <rclcpp/rclcpp.h>
+#include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/point_cloud2.h>
 #include <std_srvs/srv/empty.h>
 #include <tf2/transform_broadcaster.h>
