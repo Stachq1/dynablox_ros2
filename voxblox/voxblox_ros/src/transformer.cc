@@ -12,7 +12,7 @@ Transformer::Transformer(const rclcpp::Node::SharedPtr& nh,
       world_frame_("world"),
       sensor_frame_(""),
       timestamp_tolerance_ns_(1000000),
-      tf_buffer_(),
+      tf_buffer_(rclcpp::Duration(10)), // not sure if 100% right
       tf_listener_(tf_buffer_) {
   nh_private_->declare_parameter<std::string>("world_frame", world_frame_);
   nh_private_->get_parameter("world_frame", world_frame_);
@@ -41,7 +41,7 @@ bool Transformer::lookupTransformTf(const std::string& from_frame,
                                     const rclcpp::Time& timestamp,
                                     Transformation* transform) {
   CHECK_NOTNULL(transform);
-  tf2::StampedTransform tf_transform;
+  tf2::Transform tf_transform;
   rclcpp::Time time_to_lookup = timestamp;
 
   // Allow overwriting the TF frame for the sensor.
@@ -52,14 +52,12 @@ bool Transformer::lookupTransformTf(const std::string& from_frame,
 
   // Previous behavior was just to use the latest transform if the time is in
   // the future. Now we will just wait.
-  if (!tf_listener_.canTransform(to_frame, from_frame_modified,
-                                 time_to_lookup)) {
+  if (!tf_buffer_.canTransform(to_frame, from_frame_modified, time_to_lookup)) {
     return false;
   }
 
   try {
-    tf_listener_.lookupTransform(to_frame, from_frame_modified, time_to_lookup,
-                                 tf_transform);
+    tf_buffer_.lookupTransform(to_frame, from_frame_modified, time_to_lookup, tf_transform);
   } catch (tf2::TransformException& ex) {  // NOLINT
     RCLCPP_ERROR_STREAM(nh_private_->get_logger(),
                         "Error getting TF transform from sensor data: " << ex.what());
