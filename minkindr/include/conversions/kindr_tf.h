@@ -7,29 +7,29 @@
 #include <Eigen/Geometry>
 
 #include <glog/logging.h>
-namespace tf {
+namespace tf2 {
 
 // Function calls copied from tf_conversions due to absence of the package in ROS 2
-void vectorTFToEigen(const tf::Vector3& t, Eigen::Vector3d& e) {
+void vectorTFToEigen(const tf2::Vector3& t, Eigen::Vector3d& e) {
   e(0) = t[0];
   e(1) = t[1];
   e(2) = t[2];
 }
 
-void vectorEigenToTF(const Eigen::Vector3d& e, tf::Vector3& t) {
+void vectorEigenToTF(const Eigen::Vector3d& e, tf2::Vector3& t) {
   t[0] = e(0);
   t[1] = e(1);
   t[2] = e(2);
 }
 
-void quaternionEigenToTF(const Eigen::Quaterniond& e, tf::Quaternion& t) {
+void quaternionEigenToTF(const Eigen::Quaterniond& e, tf2::Quaternion& t) {
   t[0] = e.x();
   t[1] = e.y();
   t[2] = e.z();
   t[3] = e.w();
 }
 
-void quaternionTFToEigen(const tf::Quaternion& t, Eigen::Quaterniond& e) {
+void quaternionTFToEigen(const tf2::Quaternion& t, Eigen::Quaterniond& e) {
   e = Eigen::Quaterniond(t[3], t[0], t[1], t[2]);
 }
 
@@ -51,6 +51,7 @@ void quaternionTFToKindr(
   quaternionTFToEigen(tf_type, quat);
   *kindr = kindr::minimal::RotationQuaternionTemplate<Scalar>(quat);
 }
+
 // Also the Eigen implementation version of this.
 template <typename Scalar>
 void quaternionKindrToTF(const Eigen::Quaternion<Scalar>& kindr,
@@ -120,6 +121,6 @@ void transformTFToKindr(
       kindr::minimal::QuatTransformationTemplate<Scalar>(rotation, position);
 }
 
-}  // namespace tf
+}  // namespace tf2
 
 #endif  // MINKINDR_CONVERSIONS_KINDR_TF_H
