@@ -5,6 +5,7 @@
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+#include <geometry_msgs/msg/point.h>
 #include <geometry_msgs/msg/quaternion.h>
 #include <geometry_msgs/msg/transform.h>
 #include <geometry_msgs/msg/vector3.h>
@@ -91,6 +92,15 @@ void vectorKindrToMsg(
     const Eigen::Matrix<Scalar, 3, 1>& kindr, geometry_msgs::msg::Vector3* msg) {
   CHECK_NOTNULL(msg);
   vectorEigenToMsg(kindr, *msg);
+}
+
+template <typename Scalar>
+void vectorMsgToKindr(
+    const geometry_msgs::msg::Vector3& msg, Eigen::Matrix<Scalar, 3, 1>* kindr) {
+  CHECK_NOTNULL(kindr);
+  Eigen::Matrix<double, 3, 1> kindr_double;
+  vectorMsgToEigen(msg, kindr_double);
+  *kindr = kindr_double.cast<Scalar>();
 }
 
 // Convert a kindr::minimal::QuatTransformation to a geometry_msgs::msg::Transform.
