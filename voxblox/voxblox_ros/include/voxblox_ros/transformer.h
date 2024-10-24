@@ -3,7 +3,6 @@
 
 #include <string>
 
-#include <geometry_msgs/msg/transform_stamped.h>
 #include <rclcpp/rclcpp.hpp>
 #include <tf2/transform_listener.h>
 
@@ -25,15 +24,10 @@ class Transformer {
                        const std::string& to_frame, const rclcpp::Time& timestamp,
                        Transformation* transform);
 
-  void transformCallback(const geometry_msgs::msg::TransformStamped& transform_msg);
-
  private:
   bool lookupTransformTf(const std::string& from_frame,
                          const std::string& to_frame,
                          const rclcpp::Time& timestamp, Transformation* transform);
-
-  bool lookupTransformQueue(const rclcpp::Time& timestamp,
-                            Transformation* transform);
 
   rclcpp::Node::SharedPtr nh_;
   rclcpp::Node::SharedPtr nh_private_;
@@ -49,15 +43,8 @@ class Transformer {
    * Whether to use TF transform resolution (true) or fixed transforms from
    * parameters and transform topics (false).
    */
-  bool use_tf_transforms_;
   int64_t timestamp_tolerance_ns_;
-  /**
-   * B is the body frame of the robot, C is the camera/sensor frame creating
-   * the pointclouds, and D is the 'dynamic' frame; i.e., incoming messages
-   * are assumed to be T_G_D.
-   */
-  Transformation T_B_C_;
-  Transformation T_B_D_;
+
   /**
    * If we use topic transforms, we have 2 parts: a dynamic transform from a
    * topic and a static transform from parameters.
@@ -72,12 +59,6 @@ class Transformer {
    * from IMU to visual frame.
    */
   tf2::TransformListener tf_listener_;
-
-  // l Only used if use_tf_transforms_ set to false.
-  rclcpp::Subscription<geometry_msgs::msg::TransformStamped>::SharedPtr transform_sub_;
-
-  // l Transform queue, used only when use_tf_transforms is false.
-  AlignedDeque<geometry_msgs::msg::TransformStamped> transform_queue_;
 };
 
 }  // namespace voxblox
