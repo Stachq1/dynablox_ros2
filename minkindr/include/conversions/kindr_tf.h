@@ -7,9 +7,31 @@
 #include <Eigen/Geometry>
 
 #include <glog/logging.h>
-#include <tf_conversions/tf_eigen.h>
-
 namespace tf {
+
+// Function calls copied from tf_conversions due to absence of the package in ROS 2
+void vectorTFToEigen(const tf::Vector3& t, Eigen::Vector3d& e) {
+  e(0) = t[0];
+  e(1) = t[1];
+  e(2) = t[2];
+}
+
+void vectorEigenToTF(const Eigen::Vector3d& e, tf::Vector3& t) {
+  t[0] = e(0);
+  t[1] = e(1);
+  t[2] = e(2);
+}
+
+void quaternionEigenToTF(const Eigen::Quaterniond& e, tf::Quaternion& t) {
+  t[0] = e.x();
+  t[1] = e.y();
+  t[2] = e.z();
+  t[3] = e.w();
+}
+
+void quaternionTFToEigen(const tf::Quaternion& t, Eigen::Quaterniond& e) {
+  e = Eigen::Quaterniond(t[3], t[0], t[1], t[2]);
+}
 
 // A wrapper for the relevant functions in eigen_conversions.
 template <typename Scalar>

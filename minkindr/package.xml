@@ -14,7 +14,6 @@
   <depend>geometry_msgs</depend>
   <depend>glog</depend>
   <depend>tf2</depend>
-  <depend>tf_conversions</depend>
 
   <export>
     <build_type>ament_cmake</build_type>
