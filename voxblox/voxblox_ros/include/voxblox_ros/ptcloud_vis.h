@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <string>
 
-#include <eigen_conversions/eigen_msg.h>
 #include <pcl/point_types.h>
 #include <visualization_msgs/msg/marker.h>
 #include <visualization_msgs/msg/marker_array.h>
@@ -132,7 +131,7 @@ void createOccupancyBlocksFromLayer(
     const Layer<VoxelType>& layer,
     const ShouldVisualizeVoxelFunctionType<VoxelType>& vis_function,
     const std::string& frame_id,
-    visualization_msgs::MarkerArray* marker_array) {
+    visualization_msgs::msg::MarkerArray* marker_array) {
   CHECK_NOTNULL(marker_array);
   // Cache layer settings.
   size_t vps = layer.voxels_per_side();
