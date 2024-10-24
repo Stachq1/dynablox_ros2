@@ -20,7 +20,7 @@ set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_MACOSX_RPATH 0)
 set(CMAKE_C_FLAGS "-Werror=implicit-function-declaration")
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-add_definitions(-std=c++14 -Wall -Wextra)
+add_definitions(-std=c++17 -Wall -Wextra)
 
 # Compile protobuf files
 set(PROTO_DEFNS proto/voxblox/Block.proto

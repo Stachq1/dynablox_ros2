@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(minkindr)
 
+set(CMAKE_CXX_STANDARD 17)
+
 # Find ament
 find_package(ament_cmake REQUIRED)
 

@@ -14,7 +14,7 @@ find_package(voxblox REQUIRED)
 find_package(voxblox_msgs REQUIRED)
 
 # C++14 standard
-add_definitions(-std=c++14 -Wall -Wextra)
+add_definitions(-std=c++17 -Wall -Wextra)
 add_compile_definitions(GLOG_USE_GLOG_EXPORT)
 
 # Include directories
