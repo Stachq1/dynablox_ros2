@@ -19,7 +19,10 @@ add_definitions(-std=c++17 -Wall -Wextra)
 add_compile_definitions(GLOG_USE_GLOG_EXPORT)
 
 # Include directories
-include_directories(include)
+include_directories(${PROJECT_NAME} PUBLIC
+  include
+  ${voxblox_INCLUDE_DIRS}
+)
 
 #############
 # LIBRARIES #
@@ -50,6 +53,9 @@ add_executable(tsdf_server
   src/tsdf_server_node.cc
 )
 target_link_libraries(tsdf_server ${PROJECT_NAME})
+
+# Add the Voxblox generated .pb.h files to include directories
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/..)
 
 ################
 # INSTALLATION #
