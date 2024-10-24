@@ -4,7 +4,7 @@
 #include <string>
 
 #include <rclcpp/rclcpp.hpp>
-#include <tf2/transform_listener.h>
+#include <tf2_ros/transform_listener.h>
 
 #include <voxblox/core/common.h>
 
@@ -58,7 +58,7 @@ class Transformer {
    * To be replaced (at least optionally) with odometry + static transform
    * from IMU to visual frame.
    */
-  tf2::TransformListener tf_listener_;
+  tf2_ros::TransformListener tf_listener_;
 };
 
 }  // namespace voxblox
