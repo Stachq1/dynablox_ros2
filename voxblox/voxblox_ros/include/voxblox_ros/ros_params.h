@@ -63,48 +63,48 @@ inline TsdfIntegratorBase::Config getTsdfIntegratorConfigFromRosParam(const rclc
     const TsdfMap::Config tsdf_config = getTsdfMapConfigFromRosParam(node);
     integrator_config.default_truncation_distance = tsdf_config.tsdf_voxel_size * 4;
 
-    double truncation_distance = integrator_config.default_truncation_distance;
-    double max_weight = integrator_config.max_weight;
+    float truncation_distance = integrator_config.default_truncation_distance;
+    float max_weight = integrator_config.max_weight;
     int integrator_threads = static_cast<int>(integrator_config.integrator_threads);
 
     node->declare_parameter<bool>("voxel_carving_enabled", integrator_config.voxel_carving_enabled);
-    node->declare_parameter<double>("truncation_distance", truncation_distance);
-    node->declare_parameter<double>("max_ray_length_m", integrator_config.max_ray_length_m);
-    node->declare_parameter<double>("min_ray_length_m", integrator_config.min_ray_length_m);
-    node->declare_parameter<double>("max_weight", max_weight);
+    node->declare_parameter<float>("truncation_distance", truncation_distance);
+    node->declare_parameter<float>("max_ray_length_m", integrator_config.max_ray_length_m);
+    node->declare_parameter<float>("min_ray_length_m", integrator_config.min_ray_length_m);
+    node->declare_parameter<float>("max_weight", max_weight);
     node->declare_parameter<bool>("use_const_weight", integrator_config.use_const_weight);
     node->declare_parameter<bool>("use_weight_dropoff", integrator_config.use_weight_dropoff);
     node->declare_parameter<bool>("allow_clear", integrator_config.allow_clear);
-    node->declare_parameter<int>("start_voxel_subsampling_factor", integrator_config.start_voxel_subsampling_factor);
+    node->declare_parameter<float>("start_voxel_subsampling_factor", integrator_config.start_voxel_subsampling_factor);
     node->declare_parameter<int>("max_consecutive_ray_collisions", integrator_config.max_consecutive_ray_collisions);
     node->declare_parameter<int>("clear_checks_every_n_frames", integrator_config.clear_checks_every_n_frames);
-    node->declare_parameter<double>("max_integration_time_s", integrator_config.max_integration_time_s);
+    node->declare_parameter<float>("max_integration_time_s", integrator_config.max_integration_time_s);
     node->declare_parameter<bool>("anti_grazing", integrator_config.enable_anti_grazing);
     node->declare_parameter<bool>("use_sparsity_compensation_factor", integrator_config.use_sparsity_compensation_factor);
-    node->declare_parameter<double>("sparsity_compensation_factor", integrator_config.sparsity_compensation_factor);
-    node->declare_parameter<int>("integration_order_mode", integrator_config.integration_order_mode);
-    node->declare_parameter<int>("integrator_threads", integrator_threads);
+    node->declare_parameter<float>("sparsity_compensation_factor", integrator_config.sparsity_compensation_factor);
+    node->declare_parameter<std::string>("integration_order_mode", integrator_config.integration_order_mode);
+    node->declare_parameter<size_t>("integrator_threads", integrator_threads);
     node->declare_parameter<int>("sensor_horizontal_resolution", integrator_config.sensor_horizontal_resolution);
     node->declare_parameter<int>("sensor_vertical_resolution", integrator_config.sensor_vertical_resolution);
     node->declare_parameter<double>("sensor_vertical_field_of_view_degrees", integrator_config.sensor_vertical_field_of_view_degrees);
 
     integrator_config.voxel_carving_enabled = node->get_parameter("voxel_carving_enabled").get_value<bool>();
-    truncation_distance = node->get_parameter("truncation_distance").get_value<double>();
-    integrator_config.max_ray_length_m = node->get_parameter("max_ray_length_m").get_value<double>();
-    integrator_config.min_ray_length_m = node->get_parameter("min_ray_length_m").get_value<double>();
-    max_weight = node->get_parameter("max_weight").get_value<double>();
+    truncation_distance = node->get_parameter("truncation_distance").get_value<float>();
+    integrator_config.max_ray_length_m = node->get_parameter("max_ray_length_m").get_value<float>();
+    integrator_config.min_ray_length_m = node->get_parameter("min_ray_length_m").get_value<float>();
+    max_weight = node->get_parameter("max_weight").get_value<float>();
     integrator_config.use_const_weight = node->get_parameter("use_const_weight").get_value<bool>();
     integrator_config.use_weight_dropoff = node->get_parameter("use_weight_dropoff").get_value<bool>();
     integrator_config.allow_clear = node->get_parameter("allow_clear").get_value<bool>();
-    integrator_config.start_voxel_subsampling_factor = node->get_parameter("start_voxel_subsampling_factor").get_value<int>();
+    integrator_config.start_voxel_subsampling_factor = node->get_parameter("start_voxel_subsampling_factor").get_value<float>();
     integrator_config.max_consecutive_ray_collisions = node->get_parameter("max_consecutive_ray_collisions").get_value<int>();
     integrator_config.clear_checks_every_n_frames = node->get_parameter("clear_checks_every_n_frames").get_value<int>();
-    integrator_config.max_integration_time_s = node->get_parameter("max_integration_time_s").get_value<double>();
+    integrator_config.max_integration_time_s = node->get_parameter("max_integration_time_s").get_value<float>();
     integrator_config.enable_anti_grazing = node->get_parameter("anti_grazing").get_value<bool>();
     integrator_config.use_sparsity_compensation_factor = node->get_parameter("use_sparsity_compensation_factor").get_value<bool>();
-    integrator_config.sparsity_compensation_factor = node->get_parameter("sparsity_compensation_factor").get_value<double>();
-    integrator_config.integration_order_mode = node->get_parameter("integration_order_mode").get_value<int>();
-    integrator_threads = node->get_parameter("integrator_threads").get_value<int>();
+    integrator_config.sparsity_compensation_factor = node->get_parameter("sparsity_compensation_factor").get_value<float>();
+    integrator_config.integration_order_mode = node->get_parameter("integration_order_mode").get_value<std::string>();
+    integrator_threads = node->get_parameter("integrator_threads").get_value<size_t>();
     integrator_config.sensor_horizontal_resolution = node->get_parameter("sensor_horizontal_resolution").get_value<int>();
     integrator_config.sensor_vertical_resolution = node->get_parameter("sensor_vertical_resolution").get_value<int>();
     integrator_config.sensor_vertical_field_of_view_degrees = node->get_parameter("sensor_vertical_field_of_view_degrees").get_value<double>();
@@ -121,10 +121,10 @@ inline MeshIntegratorConfig getMeshIntegratorConfigFromRosParam(
     const rclcpp::Node::SharedPtr& node) {
   MeshIntegratorConfig mesh_integrator_config;
 
-  node->declare_parameter<double>("mesh_min_weight", mesh_integrator_config.min_weight);
+  node->declare_parameter<float>("mesh_min_weight", mesh_integrator_config.min_weight);
   node->declare_parameter<bool>("mesh_use_color", mesh_integrator_config.use_color);
 
-  mesh_integrator_config.min_weight = node->get_parameter("mesh_min_weight").get_value<double>();
+  mesh_integrator_config.min_weight = node->get_parameter("mesh_min_weight").get_value<float>();
   mesh_integrator_config.use_color = node->get_parameter("mesh_use_color").get_value<bool>();
 
   return mesh_integrator_config;
