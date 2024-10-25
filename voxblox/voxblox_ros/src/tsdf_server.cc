@@ -114,10 +114,10 @@ TsdfServer::TsdfServer(const rclcpp::Node::SharedPtr& nh,
   clear_map_srv_ = nh_private_->create_service<std_srvs::srv::Empty>(
       "clear_map", std::bind(&TsdfServer::clearMapCallback, this, std::placeholders::_1, std::placeholders::_2));
 
-  save_map_srv_ = nh_private_->create_service<std_srvs::srv::Empty>(
+  save_map_srv_ = nh_private_->create_service<voxblox_msgs::srv::FilePath>(
       "save_map", std::bind(&TsdfServer::saveMapCallback, this, std::placeholders::_1, std::placeholders::_2));
 
-  load_map_srv_ = nh_private_->create_service<std_srvs::srv::Empty>(
+  load_map_srv_ = nh_private_->create_service<voxblox_msgs::srv::FilePath>(
       "load_map", std::bind(&TsdfServer::loadMapCallback, this, std::placeholders::_1, std::placeholders::_2));
 
   publish_pointclouds_srv_ = nh_private_->create_service<std_srvs::srv::Empty>(
@@ -308,7 +308,7 @@ void TsdfServer::processPointCloudMessageAndInsert(
   }
 
   if (verbose_) {
-    RCLCPP_INFO(this->get_logger(), "Integrating a pointcloud with %lu points.", points_C.size());
+    RCLCPP_INFO(nh_private_->get_logger(), "Integrating a pointcloud with %lu points.", points_C.size());
   }
 
   auto start = nh_private_->now();
@@ -391,7 +391,8 @@ void TsdfServer::insertPointcloud(const sensor_msgs::msg::PointCloud2::SharedPtr
 
 void TsdfServer::insertFreespacePointcloud(
     const sensor_msgs::msg::PointCloud2::SharedPtr& pointcloud_msg_in) {
-  if (pointcloud_msg_in->header.stamp - last_msg_time_freespace_ptcloud_ >
+  rclcpp::Time header_time(pointcloud_msg_in->header.stamp);
+  if (header_time - last_msg_time_freespace_ptcloud_ >
       min_time_between_msgs_) {
     last_msg_time_freespace_ptcloud_ = pointcloud_msg_in->header.stamp;
     // Push the received freespace point cloud to the queue for processing.
@@ -645,9 +646,9 @@ void tsdfMapCallback(const voxblox_msgs::msg::Layer::SharedPtr layer_msg) {
   timing::Timer receive_map_timer("map/receive_tsdf");
   bool success = deserializeMsgToLayer<TsdfVoxel>(*layer_msg, tsdf_map_->getTsdfLayerPtr());
   if (!success) {
-    RCLCPP_ERROR_THROTTLE(this->get_logger(), 10, "Got an invalid TSDF map message!");
+    RCLCPP_ERROR_THROTTLE(nh_private_->get_logger(), 10, "Got an invalid TSDF map message!");
   } else {
-    RCLCPP_INFO_ONCE(this->get_logger(), "Got a TSDF map from ROS topic!");
+    RCLCPP_INFO_ONCE(nh_private_->get_logger(), "Got a TSDF map from ROS topic!");
     if (publish_pointclouds_on_update_) {
       publishPointclouds();
     }

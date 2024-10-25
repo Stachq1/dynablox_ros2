@@ -135,7 +135,7 @@ class TsdfServer {
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr tsdf_pointcloud_pub_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr surface_pointcloud_pub_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr tsdf_slice_pub_;
-  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr occupancy_marker_pub_;
+  rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr occupancy_marker_pub_;
   rclcpp::Publisher<geometry_msgs::msg::TransformStamped>::SharedPtr icp_transform_pub_;
 
   // Publish the complete map for other nodes to consume.
