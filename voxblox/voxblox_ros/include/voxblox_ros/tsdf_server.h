@@ -11,7 +11,7 @@
 #include <pcl_conversions/pcl_conversions.h>
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
-#include <std_srvs/srv/empty.h>
+#include <std_srvs/srv/empty.hpp>
 #include <tf2_ros/transform_broadcaster.h>
 #include <visualization_msgs/msg/marker_array.hpp>
 
@@ -22,7 +22,7 @@
 #include <voxblox/io/mesh_ply.h>
 #include <voxblox/mesh/mesh_integrator.h>
 #include <voxblox/utils/color_maps.h>
-#include <voxblox_msgs/srv/file_path.h>
+#include <voxblox_msgs/srv/file_path.hpp>
 #include <voxblox_msgs/msg/mesh.hpp>
 
 #include "voxblox_ros/mesh_vis.h"
