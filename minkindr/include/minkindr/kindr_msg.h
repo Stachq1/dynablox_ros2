@@ -5,10 +5,10 @@
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-#include <geometry_msgs/msg/point.h>
-#include <geometry_msgs/msg/quaternion.h>
-#include <geometry_msgs/msg/transform.h>
-#include <geometry_msgs/msg/vector3.h>
+#include <geometry_msgs/msg/point.hpp>
+#include <geometry_msgs/msg/quaternion.hpp>
+#include <geometry_msgs/msg/transform.hpp>
+#include <geometry_msgs/msg/vector3.hpp>
 #include <glog/logging.h>
 #include <kindr/minimal/quat-transformation.h>
 #include <kindr/minimal/transform-2d.h>

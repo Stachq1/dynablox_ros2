@@ -28,14 +28,14 @@
 #include <limits>
 
 #include <minkindr/kindr_msg.h>
-#include <visualization_msgs/msg/marker.h>
+#include <visualization_msgs/msg/marker.hpp>
 
 #include <voxblox/core/common.h>
 #include <voxblox/integrator/esdf_integrator.h>
 #include <voxblox/integrator/tsdf_integrator.h>
 #include <voxblox/mesh/mesh.h>
 #include <voxblox/mesh/mesh_layer.h>
-#include <voxblox_msgs/msg/mesh.h>
+#include <voxblox_msgs/msg/mesh.hpp>
 
 #include "voxblox_ros/conversions.h"
 

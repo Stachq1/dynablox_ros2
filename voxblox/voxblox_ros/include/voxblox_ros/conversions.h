@@ -6,13 +6,13 @@
 #include <vector>
 
 #include <pcl/point_types.h>
-#include <std_msgs/msg/color_rgba.h>
+#include <std_msgs/msg/color_rgba.hpp>
 
 #include <voxblox/core/common.h>
 #include <voxblox/core/layer.h>
 #include <voxblox/mesh/mesh.h>
 #include <voxblox/utils/color_maps.h>
-#include <voxblox_msgs/msg/layer.h>
+#include <voxblox_msgs/msg/layer.hpp>
 
 namespace voxblox {
 

@@ -5,8 +5,8 @@
 #include <string>
 
 #include <pcl/point_types.h>
-#include <visualization_msgs/msg/marker.h>
-#include <visualization_msgs/msg/marker_array.h>
+#include <visualization_msgs/msg/marker.hpp>
+#include <visualization_msgs/msg/marker_array.hpp>
 
 #include <voxblox/core/common.h>
 #include <voxblox/core/layer.h>
