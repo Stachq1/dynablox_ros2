@@ -155,10 +155,6 @@ class TsdfServer {
   /// Tools for broadcasting TFs.
   tf2_ros::TransformBroadcaster tf_broadcaster_;
 
-  // Timers.
-  rclcpp::WallTimer::SharedPtr update_mesh_timer_;
-  rclcpp::WallTimer::SharedPtr publish_map_timer_;
-
   bool verbose_;
 
   /**

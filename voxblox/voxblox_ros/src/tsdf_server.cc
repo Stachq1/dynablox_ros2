@@ -42,16 +42,16 @@ TsdfServer::TsdfServer(const rclcpp::Node::SharedPtr& nh,
       transformer_(nh, nh_private) {
   getServerConfigFromRosParam(nh_private);
 
-  surface_pointcloud_pub_ = nh_private_->create_publisher<pcl::PointCloud<pcl::PointXYZRGB>>(
+  surface_pointcloud_pub_ = nh_private_->create_publisher<sensor_msgs::msg::PointCloud2>(
       "surface_pointcloud", rclcpp::QoS(1).transient_local());
 
-  tsdf_pointcloud_pub_ = nh_private_->create_publisher<pcl::PointCloud<pcl::PointXYZI>>(
+  tsdf_pointcloud_pub_ = nh_private_->create_publisher<sensor_msgs::msg::PointCloud2>(
       "tsdf_pointcloud", rclcpp::QoS(1).transient_local());
 
   occupancy_marker_pub_ = nh_private_->create_publisher<visualization_msgs::msg::MarkerArray>(
       "occupied_nodes", rclcpp::QoS(1).transient_local());
 
-  tsdf_slice_pub_ = nh_private_->create_publisher<pcl::PointCloud<pcl::PointXYZI>>(
+  tsdf_slice_pub_ = nh_private_->create_publisher<sensor_msgs::msg::PointCloud2>(
       "tsdf_slice", rclcpp::QoS(1).transient_local());
 
   nh_private_->declare_parameter<int>("pointcloud_queue_size", pointcloud_queue_size_);
@@ -132,7 +132,7 @@ TsdfServer::TsdfServer(const rclcpp::Node::SharedPtr& nh,
   nh_private_->get_parameter("update_mesh_every_n_sec", update_mesh_every_n_sec);
 
   if (update_mesh_every_n_sec > 0.0) {
-    update_mesh_timer_ = nh_private_->create_wall_timer(std::chrono::duration<double>(update_mesh_every_n_sec),
+    auto update_mesh_timer = nh_private_->create_wall_timer(std::chrono::duration<double>(update_mesh_every_n_sec),
         std::bind(&TsdfServer::updateMesh, this));
   }
 
@@ -141,7 +141,7 @@ TsdfServer::TsdfServer(const rclcpp::Node::SharedPtr& nh,
   nh_private_->get_parameter("publish_map_every_n_sec", publish_map_every_n_sec);
 
   if (publish_map_every_n_sec > 0.0) {
-    publish_map_timer_ = nh_private_->create_wall_timer(std::chrono::duration<double>(publish_map_every_n_sec),
+    auto publish_map_timer = nh_private_->create_wall_timer(std::chrono::duration<double>(publish_map_every_n_sec),
         std::bind(&TsdfServer::publishMap, this));
   }
 }
@@ -270,7 +270,7 @@ void TsdfServer::processPointCloudMessageAndInsert(
         icp_->runICP(tsdf_map_->getTsdfLayer(), points_C,
                      icp_corrected_transform_ * T_G_C, &T_G_C_refined);
     if (verbose_) {
-      RCLCPP_INFO(nh_private->get_logger(),
+      RCLCPP_INFO(nh_private_->get_logger(),
                   "ICP refinement performed %zu successful update steps", num_icp_updates);
     }
     icp_corrected_transform_ = T_G_C_refined * T_G_C.inverse();
@@ -288,11 +288,10 @@ void TsdfServer::processPointCloudMessageAndInsert(
     tf2::Transform icp_tf_msg, pose_tf_msg;
     geometry_msgs::msg::TransformStamped transform_msg;
 
-    // TODO: Requires to be transfered to TF2 (?)
-    tf::transformKindrToTF(icp_corrected_transform_.cast<double>(),
+    tf2::transformKindrToTF(icp_corrected_transform_.cast<double>(),
                            &icp_tf_msg);
-    tf::transformKindrToTF(T_G_C.cast<double>(), &pose_tf_msg);
-    tf::transformKindrToMsg(icp_corrected_transform_.cast<double>(),
+    tf2::transformKindrToTF(T_G_C.cast<double>(), &pose_tf_msg);
+    tf2::transformKindrToMsg(icp_corrected_transform_.cast<double>(),
                             &transform_msg.transform);
     tf_broadcaster_.sendTransform(
         tf2::StampedTransform(icp_tf_msg, pointcloud_msg->header.stamp,
@@ -316,7 +315,7 @@ void TsdfServer::processPointCloudMessageAndInsert(
   integratePointcloud(T_G_C_refined, points_C, colors, is_freespace_pointcloud);
   auto end = nh_private_->now();
   if (verbose_) {
-    RCLCPP_INFO(this->get_logger(), "Finished integrating in %f seconds, have %lu blocks.",
+    RCLCPP_INFO(nh_private_->get_logger(), "Finished integrating in %f seconds, have %lu blocks.",
                   (end - start).seconds(),
                   tsdf_map_->getTsdfLayer().getNumberOfAllocatedBlocks());
   }
@@ -426,7 +425,10 @@ void TsdfServer::publishAllUpdatedTsdfVoxels() {
   createDistancePointcloudFromTsdfLayer(tsdf_map_->getTsdfLayer(), &pointcloud);
 
   pointcloud.header.frame_id = world_frame_;
-  tsdf_pointcloud_pub_->publish(pointcloud);
+
+  sensor_msgs::msg::PointCloud2 pointcloud_ros;
+  pcl::toROSMsg(pointcloud, pointcloud_ros);
+  tsdf_pointcloud_pub_->publish(pointcloud_ros);
 }
 
 void TsdfServer::publishTsdfSurfacePoints() {
@@ -438,7 +440,10 @@ void TsdfServer::publishTsdfSurfacePoints() {
                                        surface_distance_thresh, &pointcloud);
 
   pointcloud.header.frame_id = world_frame_;
-  surface_pointcloud_pub_->publish(pointcloud);
+
+  sensor_msgs::msg::PointCloud2 pointcloud_ros;
+  pcl::toROSMsg(pointcloud, pointcloud_ros);
+  surface_pointcloud_pub_->publish(pointcloud_ros);
 }
 
 void TsdfServer::publishTsdfOccupiedNodes() {
@@ -456,7 +461,10 @@ void TsdfServer::publishSlices() {
                                              slice_level_, &pointcloud);
 
   pointcloud.header.frame_id = world_frame_;
-  tsdf_slice_pub_->publish(pointcloud);
+
+  sensor_msgs::msg::PointCloud2 pointcloud_ros;
+  pcl::toROSMsg(pointcloud, pointcloud_ros);
+  tsdf_slice_pub_->publish(pointcloud_ros);
 }
 
 void TsdfServer::publishMap(bool reset_remote_map) {
