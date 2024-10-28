@@ -142,7 +142,7 @@ TsdfServer::TsdfServer(const rclcpp::Node::SharedPtr& nh,
 
   if (publish_map_every_n_sec > 0.0) {
     auto publish_map_timer = nh_private_->create_wall_timer(std::chrono::duration<double>(publish_map_every_n_sec),
-        std::bind(&TsdfServer::publishMap, this));
+        std::bind(&TsdfServer::publishMap, this, false));
   }
 }
 
@@ -285,24 +285,21 @@ void TsdfServer::processPointCloudMessageAndInsert(
     }
 
     // Publish transforms as both TF and message.
-    tf2::Transform icp_tf_msg, pose_tf_msg;
-    geometry_msgs::msg::TransformStamped transform_msg;
+    geometry_msgs::msg::TransformStamped icp_tf_msg, pose_tf_msg;
 
-    tf2::transformKindrToTF(icp_corrected_transform_.cast<double>(),
-                           &icp_tf_msg);
-    tf2::transformKindrToTF(T_G_C.cast<double>(), &pose_tf_msg);
-    tf2::transformKindrToMsg(icp_corrected_transform_.cast<double>(),
-                            &transform_msg.transform);
-    tf_broadcaster_.sendTransform(
-        tf2::StampedTransform(icp_tf_msg, pointcloud_msg->header.stamp,
-                             world_frame_, icp_corrected_frame_));
-    tf_broadcaster_.sendTransform(
-        tf2::StampedTransform(pose_tf_msg, pointcloud_msg->header.stamp,
-                             icp_corrected_frame_, pose_corrected_frame_));
+    tf2::transformKindrToMsg(icp_corrected_transform_.cast<double>(), &icp_tf_msg.transform);
+    icp_tf_msg.header.frame_id = world_frame_;
+    icp_tf_msg.header.stamp = pointcloud_msg->header.stamp,;
+    icp_tf_msg.child_frame_id = icp_corrected_frame_;
+    tf_broadcaster_.sendTransform(icp_tf_msg);
 
-    transform_msg.header.frame_id = world_frame_;
-    transform_msg.child_frame_id = icp_corrected_frame_;
-    icp_transform_pub_->publish(transform_msg);
+    tf2::transformKindrToMsg(T_G_C.cast<double>(), &pose_tf_msg.transform);
+    pose_tf_msg.header.frame_id = icp_corrected_frame_;
+    pose_tf_msg.header.stamp = pointcloud_msg->header.stamp,;
+    pose_tf_msg.child_frame_id = pose_corrected_frame_;
+    tf_broadcaster_.sendTransform(pose_tf_msg);
+
+    icp_transform_pub_->publish(icp_tf_msg);
 
     icp_timer.Stop();
   }
@@ -345,7 +342,7 @@ bool TsdfServer::getNextPointcloudFromQueue(
     return true;
   } else {
     if (queue->size() >= kMaxQueueSize) {
-      RCLCPP_ERROR_THROTTLE(nh_private_->get_logger(), 60,
+      RCLCPP_ERROR_THROTTLE(nh_private_->get_logger(), *this->get_clock(), 60,
                             "Input pointcloud queue getting too long! Dropping "
                             "some pointclouds. Either unable to look up transform "
                             "timestamps or the processing is taking too long.");
@@ -646,7 +643,7 @@ void tsdfMapCallback(const voxblox_msgs::msg::Layer::SharedPtr layer_msg) {
   timing::Timer receive_map_timer("map/receive_tsdf");
   bool success = deserializeMsgToLayer<TsdfVoxel>(*layer_msg, tsdf_map_->getTsdfLayerPtr());
   if (!success) {
-    RCLCPP_ERROR_THROTTLE(nh_private_->get_logger(), 10, "Got an invalid TSDF map message!");
+    RCLCPP_ERROR_THROTTLE(nh_private_->get_logger(), *this->get_clock(), 10, "Got an invalid TSDF map message!");
   } else {
     RCLCPP_INFO_ONCE(nh_private_->get_logger(), "Got a TSDF map from ROS topic!");
     if (publish_pointclouds_on_update_) {
