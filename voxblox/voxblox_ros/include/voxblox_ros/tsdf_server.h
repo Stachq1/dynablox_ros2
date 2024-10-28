@@ -46,12 +46,12 @@ class TsdfServer {
 
   void getServerConfigFromRosParam(const rclcpp::Node::SharedPtr& nh_private);
 
-  void insertPointcloud(const sensor_msgs::msg::PointCloud2::Ptr& pointcloud);
+  void insertPointcloud(const std::shared_ptr<sensor_msgs::msg::PointCloud2>& pointcloud);
 
-  void insertFreespacePointcloud(const sensor_msgs::msg::PointCloud2::Ptr& pointcloud);
+  void insertFreespacePointcloud(const std::shared_ptr<sensor_msgs::msg::PointCloud2>& pointcloud);
 
   virtual void processPointCloudMessageAndInsert(
-      const sensor_msgs::msg::PointCloud2::Ptr& pointcloud_msg,
+      const std::shared_ptr<sensor_msgs::msg::PointCloud2>& pointcloud_msg,
       const Transformation& T_G_C, const bool is_freespace_pointcloud);
 
   void integratePointcloud(const Transformation& T_G_C,
@@ -111,7 +111,7 @@ class TsdfServer {
   virtual void clear();
 
   /// Overwrites the layer with what's coming from the topic!
-  void tsdfMapCallback(const voxblox_msgs::msg::Layer& layer_msg);
+  void tsdfMapCallback(const voxblox_msgs::msg::Layer::SharedPtr layer_msg);
 
  protected:
   /**
@@ -119,8 +119,8 @@ class TsdfServer {
    * the queue.
    */
   bool getNextPointcloudFromQueue(
-      std::queue<sensor_msgs::msg::PointCloud2::Ptr>* queue,
-      sensor_msgs::msg::PointCloud2::Ptr* pointcloud_msg, Transformation* T_G_C);
+      std::queue<std::shared_ptr<sensor_msgs::msg::PointCloud2>>* queue,
+      std::shared_ptr<sensor_msgs::msg::PointCloud2>* pointcloud_msg, Transformation* T_G_C);
 
   // Nodes
   rclcpp::Node::SharedPtr nh_;
@@ -241,8 +241,8 @@ class TsdfServer {
    * Queue of incoming pointclouds, in case the transforms can't be immediately
    * resolved.
    */
-  std::queue<sensor_msgs::msg::PointCloud2::Ptr> pointcloud_queue_;
-  std::queue<sensor_msgs::msg::PointCloud2::Ptr> freespace_pointcloud_queue_;
+  std::queue<std::shared_ptr<sensor_msgs::msg::PointCloud2>> pointcloud_queue_;
+  std::queue<std::shared_ptr<sensor_msgs::msg::PointCloud2>> freespace_pointcloud_queue_;
 
   // Last message times for throttling input.
   rclcpp::Time last_msg_time_ptcloud_;

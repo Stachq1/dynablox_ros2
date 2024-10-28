@@ -142,11 +142,11 @@ TsdfServer::TsdfServer(const rclcpp::Node::SharedPtr& nh,
 
   if (publish_map_every_n_sec > 0.0) {
     auto publish_map_timer = nh_private_->create_wall_timer(std::chrono::duration<double>(publish_map_every_n_sec),
-        std::bind(&TsdfServer::publishMap, this, false));
+        [this]() { this->publishMap(); });
   }
 }
 
-void TsdfServer::getServerConfigFromRosParam(rclcpp::Node::SharedPtr& nh_private) {
+void TsdfServer::getServerConfigFromRosParam(const rclcpp::Node::SharedPtr& nh_private) {
   // Before subscribing, determine minimum time between messages.
   // 0 by default.
   double min_time_between_msgs_sec = 0.0;
@@ -222,7 +222,7 @@ void TsdfServer::getServerConfigFromRosParam(rclcpp::Node::SharedPtr& nh_private
 }
 
 void TsdfServer::processPointCloudMessageAndInsert(
-    const sensor_msgs::msg::PointCloud2::Ptr& pointcloud_msg,
+    const std::shared_ptr<sensor_msgs::msg::PointCloud2>& pointcloud_msg,
     const Transformation& T_G_C, const bool is_freespace_pointcloud) {
   // Convert the PCL pointcloud into our awesome format.
 
@@ -328,8 +328,8 @@ void TsdfServer::processPointCloudMessageAndInsert(
 
 // Checks if we can get the next message from queue.
 bool TsdfServer::getNextPointcloudFromQueue(
-    std::queue<sensor_msgs::msg::PointCloud2::Ptr>* queue,
-    sensor_msgs::msg::PointCloud2::Ptr* pointcloud_msg, Transformation* T_G_C) {
+    std::queue<std::shared_ptr<sensor_msgs::msg::PointCloud2>>* queue,
+    std::shared_ptr<sensor_msgs::msg::PointCloud2>* pointcloud_msg, Transformation* T_G_C) {
   const size_t kMaxQueueSize = 10;
   if (queue->empty()) {
     return false;
