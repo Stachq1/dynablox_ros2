@@ -58,7 +58,9 @@ TsdfServer::TsdfServer(const rclcpp::Node::SharedPtr& nh,
   nh_private_->get_parameter("pointcloud_queue_size", pointcloud_queue_size_);
   pointcloud_sub_ = nh_->create_subscription<sensor_msgs::msg::PointCloud2>(
       "pointcloud", rclcpp::QoS(pointcloud_queue_size_),
-      std::bind(&TsdfServer::insertPointcloud, this, std::placeholders::_1));
+      [this](const sensor_msgs::msg::PointCloud2::SharedPtr msg) {
+        this->insertPointcloud(msg);
+      });
 
   mesh_pub_ = nh_private_->create_publisher<voxblox_msgs::msg::Mesh>(
       "mesh", rclcpp::QoS(1).transient_local());
@@ -152,7 +154,7 @@ void TsdfServer::getServerConfigFromRosParam(const rclcpp::Node::SharedPtr& nh_p
   double min_time_between_msgs_sec = 0.0;
   nh_private->declare_parameter("min_time_between_msgs_sec", 0.0);
   nh_private->get_parameter("min_time_between_msgs_sec", min_time_between_msgs_sec);
-  std::chrono::duration<double> min_time_between_msgs_chrono(time_in_seconds);
+  std::chrono::duration<double> min_time_between_msgs_chrono(min_time_between_msgs_sec);
   min_time_between_msgs_ = rclcpp::Duration(min_time_between_msgs_chrono);
 
   nh_private->declare_parameter("max_block_distance_from_body", std::numeric_limits<FloatingPoint>::max());
