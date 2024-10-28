@@ -83,7 +83,7 @@ inline TsdfIntegratorBase::Config getTsdfIntegratorConfigFromRosParam(const rclc
     node->declare_parameter<bool>("use_sparsity_compensation_factor", integrator_config.use_sparsity_compensation_factor);
     node->declare_parameter<float>("sparsity_compensation_factor", integrator_config.sparsity_compensation_factor);
     node->declare_parameter<std::string>("integration_order_mode", integrator_config.integration_order_mode);
-    node->declare_parameter<size_t>("integrator_threads", integrator_threads);
+    node->declare_parameter<int>("integrator_threads", integrator_threads);
     node->declare_parameter<int>("sensor_horizontal_resolution", integrator_config.sensor_horizontal_resolution);
     node->declare_parameter<int>("sensor_vertical_resolution", integrator_config.sensor_vertical_resolution);
     node->declare_parameter<double>("sensor_vertical_field_of_view_degrees", integrator_config.sensor_vertical_field_of_view_degrees);
