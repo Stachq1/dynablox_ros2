@@ -152,7 +152,8 @@ void TsdfServer::getServerConfigFromRosParam(const rclcpp::Node::SharedPtr& nh_p
   double min_time_between_msgs_sec = 0.0;
   nh_private->declare_parameter("min_time_between_msgs_sec", 0.0);
   nh_private->get_parameter("min_time_between_msgs_sec", min_time_between_msgs_sec);
-  min_time_between_msgs_ = rclcpp::Duration(min_time_between_msgs_sec); // Very likely wrong
+  std::chrono::duration<double> min_time_between_msgs_chrono(time_in_seconds);
+  min_time_between_msgs_ = rclcpp::Duration(min_time_between_msgs_chrono);
 
   nh_private->declare_parameter("max_block_distance_from_body", std::numeric_limits<FloatingPoint>::max());
   nh_private->get_parameter("max_block_distance_from_body", max_block_distance_from_body_);
@@ -355,7 +356,8 @@ bool TsdfServer::getNextPointcloudFromQueue(
 }
 
 void TsdfServer::insertPointcloud(const sensor_msgs::msg::PointCloud2::SharedPtr& pointcloud_msg_in) {
-  if (pointcloud_msg_in->header.stamp - last_msg_time_ptcloud_ >
+  rclcpp::Time header_time(pointcloud_msg_in->header.stamp);
+  if (header_time - last_msg_time_ptcloud_ >
       min_time_between_msgs_) {
     last_msg_time_ptcloud_ = pointcloud_msg_in->header.stamp;
     // Push the received point cloud to the queue for processing.
@@ -643,7 +645,7 @@ void TsdfServer::tsdfMapCallback(const voxblox_msgs::msg::Layer::SharedPtr layer
   timing::Timer receive_map_timer("map/receive_tsdf");
   bool success = deserializeMsgToLayer<TsdfVoxel>(*layer_msg, tsdf_map_->getTsdfLayerPtr());
   if (!success) {
-    RCLCPP_ERROR_THROTTLE(nh_private_->get_logger(), nh_private_->get_clock(), 10, "Got an invalid TSDF map message!");
+    RCLCPP_ERROR_THROTTLE(nh_private_->get_logger(), *nh_private_->get_clock(), 10, "Got an invalid TSDF map message!");
   } else {
     RCLCPP_INFO_ONCE(nh_private_->get_logger(), "Got a TSDF map from ROS topic!");
     if (publish_pointclouds_on_update_) {
