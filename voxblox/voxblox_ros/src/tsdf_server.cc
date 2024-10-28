@@ -72,7 +72,9 @@ TsdfServer::TsdfServer(const rclcpp::Node::SharedPtr& nh,
 
   tsdf_map_sub_ = nh_private_->create_subscription<voxblox_msgs::msg::Layer>(
       "tsdf_map_in", rclcpp::QoS(1),
-      std::bind(&TsdfServer::tsdfMapCallback, this, std::placeholders::_1));
+      [this](const sensor_msgs::msg::PointCloud2::SharedPtr msg) {
+          this->tsdfMapCallback(msg);
+      });
 
   nh_private_->declare_parameter<bool>("publish_tsdf_map", publish_tsdf_map_);
   nh_private_->get_parameter("publish_tsdf_map", publish_tsdf_map_);
@@ -80,7 +82,9 @@ TsdfServer::TsdfServer(const rclcpp::Node::SharedPtr& nh,
   if (use_freespace_pointcloud_) {
     freespace_pointcloud_sub_ = nh_->create_subscription<sensor_msgs::msg::PointCloud2>(
         "freespace_pointcloud", rclcpp::QoS(pointcloud_queue_size_),
-        std::bind(&TsdfServer::insertFreespacePointcloud, this, std::placeholders::_1));
+        [this](const sensor_msgs::msg::PointCloud2::SharedPtr msg) {
+          this->insertFreespacePointcloud(msg);
+        });
   }
 
   if (enable_icp_) {
