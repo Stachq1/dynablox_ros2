@@ -72,7 +72,7 @@ TsdfServer::TsdfServer(const rclcpp::Node::SharedPtr& nh,
 
   tsdf_map_sub_ = nh_private_->create_subscription<voxblox_msgs::msg::Layer>(
       "tsdf_map_in", rclcpp::QoS(1),
-      [this](const sensor_msgs::msg::PointCloud2::SharedPtr msg) {
+      [this](const voxblox_msgs::msg::Layer::SharedPtr msg) {
           this->tsdfMapCallback(msg);
       });
 
