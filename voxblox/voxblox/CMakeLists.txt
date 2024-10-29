@@ -96,6 +96,11 @@ install(
   DESTINATION include
 )
 
+install(
+  FILES ${PROTO_HDRS}
+  DESTINATION include/${PROJECT_NAME}
+)
+
 ament_export_dependencies(Boost Eigen3 minkindr PCL Protobuf Threads)
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME} ${PROJECT_NAME}_proto)
