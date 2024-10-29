@@ -13,11 +13,9 @@
 #include <pcl_conversions/pcl_conversions.h>
 #include <pcl_ros/impl/transforms.hpp>
 #include <pcl_ros/point_cloud.h>
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
-#include <tf2_ros/buffer.h>
-#include <tf2_ros/transform_listener.h>
-#include <visualization_msgs/Marker.h>
+#include <visualization_msgs/msg/marker.hpp>
 
 namespace dynablox {
 
@@ -41,13 +39,9 @@ void MotionDetector::Config::setupParamsAndPrinting() {
   setupParam("shutdown_after", &shutdown_after);
 }
 
-MotionDetector::MotionDetector(const ros::NodeHandle& nh,
-                               const ros::NodeHandle& nh_private)
-    : config_(
-          config_utilities::getConfigFromRos<MotionDetector::Config>(nh_private)
-              .checkValid()),
-      nh_(nh),
-      nh_private_(nh_private) {
+MotionDetector::MotionDetector(const rclcpp::Node::SharedPtr& nh,
+                               const rclcpp::Node::SharedPtr& nh_private)
+    : nh_(nh), nh_private_(nh_private) {
   setupMembers();
 
   // Cache frequently used constants.
@@ -56,10 +50,6 @@ MotionDetector::MotionDetector(const ros::NodeHandle& nh,
 
   // Advertise and subscribe to topics.
   setupRos();
-
-  // Print current configuration of all components.
-  LOG_IF(INFO, config_.verbose) << "Configuration:\n"
-                                << config_utilities::Global::printAllConfigs();
 }
 
 void MotionDetector::setupMembers() {
