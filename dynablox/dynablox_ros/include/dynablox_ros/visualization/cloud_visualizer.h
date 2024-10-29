@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 
-#include "dynablox/3rd_party/config_utilities.hpp"
 #include "dynablox/common/types.h"
 #include "dynablox_ros/visualization/motion_visualizer.h"
 
@@ -13,27 +12,21 @@ namespace dynablox {
 class CloudVisualizer {
  public:
   // Config.
-  struct Config : public config_utilities::Config<Config> {
+  struct Config {
     // File to load cloud data from.
     std::string file_path;
 
     // How frequently visualizations should be republished [s].
     float refresh_rate = 0.25;
 
-    Config() { setConfigName("CloudVisualizer"); }
-
    protected:
-    void setupParamsAndPrinting() override;
-    void checkParams() const override;
+    void setupParamsAndPrinting();
+    void checkParams() const;
   };
 
   // Setup.
-  CloudVisualizer(ros::NodeHandle nh);
-
-  void timerCalback(const ros::TimerEvent& /** e */);
-
+  CloudVisualizer(rclcpp::Node::SharedPtr nh);
   void readClouds();
-
   void visualizeClouds();
 
  private:
@@ -41,8 +34,8 @@ class CloudVisualizer {
   MotionVisualizer visualizer_;
 
   // ROS.
-  ros::NodeHandle nh_;
-  ros::Timer timer_;
+  rclcpp::Node::SharedPtr nh_;
+  rclcpp::TimerBase::SharedPtr timer_;
 
   // Data to visualize.
   std::vector<Cloud> clouds_;

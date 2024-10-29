@@ -12,25 +12,21 @@
 namespace dynablox {
 
 void CloudVisualizer::Config::checkParams() const {
+  // TODO: Use ROS 2 functionality instead
   checkParamCond(std::filesystem::exists(file_path),
                  "Target file '" + file_path + "' does not exist.");
   checkParamGT(refresh_rate, 0.f, "refresh_rate");
 }
 
 void CloudVisualizer::Config::setupParamsAndPrinting() {
+  // TODO: Use ROS 2 functionality instead
   setupParam("file_path", &file_path);
   setupParam("refresh_rate", &refresh_rate, "s");
 }
 
-CloudVisualizer::CloudVisualizer(ros::NodeHandle nh)
-    : config_(config_utilities::getConfigFromRos<CloudVisualizer::Config>(nh)
-                  .checkValid()),
+CloudVisualizer::CloudVisualizer(rclcpp::Node::SharedPtr nh) :
       visualizer_(nh, std::make_shared<TsdfLayer>(0.2, 16)),
       nh_(nh) {
-  // NOTE(schmluk): The Tsdf Layer is a dummy and is not going to be used.
-  LOG(INFO) << "Configuration:\n"
-            << config_utilities::Global::printAllConfigs();
-
   // Load the data.
   if (!loadCloudFromCsv(config_.file_path, clouds_, cloud_infos_, clusters_)) {
     LOG(FATAL) << "Failed to read clouds from '" << config_.file_path << "'.";
@@ -59,12 +55,9 @@ CloudVisualizer::CloudVisualizer(ros::NodeHandle nh)
   }
 
   // Visualize periodically just in case.
-  timer_ = nh_.createTimer(ros::Duration(config_.refresh_rate),
-                           &CloudVisualizer::timerCalback, this);
-}
-
-void CloudVisualizer::timerCalback(const ros::TimerEvent& /** e */) {
-  visualizeClouds();
+  auto refresh_rate = std::chrono::duration_cast<std::chrono::milliseconds>(
+                      std::chrono::duration<double>(config_.refresh_rate));
+  timer_ = this->create_wall_timer(refresh_rate, [this]() { this->visualizeClouds(); });
 }
 
 void CloudVisualizer::visualizeClouds() {
