@@ -10,7 +10,9 @@
 
 #include <pcl_conversions/pcl_conversions.h>
 #include <pcl_ros/point_cloud.h>
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.h>
+#include <tf2_ros/buffer.h>
+#include <tf2_ros/transform_listener.h>
 #include <voxblox/core/block_hash.h>
 #include <voxblox/core/common.h>
 #include <voxblox_ros/tsdf_server.h>
@@ -31,7 +33,7 @@ namespace dynablox {
 class MotionDetector {
  public:
   // Config.
-  struct Config : public config_utilities::Config<Config> {
+  struct Config {
     // If true evaluate the performance against GT.
     bool evaluate = false;
 
@@ -43,8 +45,7 @@ class MotionDetector {
 
     // Frame names.
     std::string global_frame_name = "map";
-    std::string sensor_frame_name =
-        "";  // Takes msg header if empty, overrides msg header if set.
+    std::string sensor_frame_name = "";  // Takes msg header if empty, overrides msg header if set.
 
     // Subscriber queue size.
     int queue_size = 1;
@@ -55,22 +56,20 @@ class MotionDetector {
     // If >0, shutdown after this many evaluated frames.
     int shutdown_after = 0;
 
-    Config() { setConfigName("MotionDetector"); }
-
    protected:
-    void setupParamsAndPrinting() override;
-    void checkParams() const override;
+    void setupParamsAndPrinting();
+    void checkParams() const;
   };
 
   // Constructor.
-  MotionDetector(const ros::NodeHandle& nh, const ros::NodeHandle& nh_private);
+  MotionDetector(const rclcpp::Node::SharedPtr& nh, const rclcpp::Node::SharedPtr& nh_private);
 
   // Setup.
   void setupMembers();
   void setupRos();
 
   // Callbacks.
-  void pointcloudCallback(const sensor_msgs::PointCloud2::Ptr& msg);
+  void pointcloudCallback(const sensor_msgs::msg::PointCloud2::Ptr& msg);
 
   // Motion detection pipeline.
   bool lookupTransform(const std::string& target_frame,
@@ -127,10 +126,12 @@ class MotionDetector {
   const Config config_;
 
   // ROS.
-  ros::NodeHandle nh_;
-  ros::NodeHandle nh_private_;
-  ros::Subscriber lidar_pcl_sub_;
-  tf::TransformListener tf_listener_;
+  rclcpp::Node::SharedPtr nh_;
+  rclcpp::Node::SharedPtr nh_private_;
+  rclcpp::Subscription lidar_pcl_sub_;
+
+  tf2_ros::Buffer tf_buffer_;
+  tf2_ros::TransformListener tf_listener_;
 
   // Voxblox map.
   std::shared_ptr<voxblox::TsdfServer> tsdf_server_;
