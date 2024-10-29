@@ -63,8 +63,8 @@ class MotionVisualizer {
     float visualization_max_z = 10000.f;
 
    protected:
-    void setupParamsAndPrinting() override;
-    void checkParams() const override;
+    void setupParamsAndPrinting();
+    void checkParams() const;
     void checkColor(const std::vector<float>& color,
                     const std::string& name) const;
   };
