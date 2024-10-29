@@ -7,15 +7,15 @@
 #include <unordered_map>
 #include <vector>
 
-#include <geometry_msgs/Point.h>
-#include <geometry_msgs/Vector3.h>
-#include <std_msgs/ColorRGBA.h>
-#include <visualization_msgs/Marker.h>
+#include <geometry_msgs/msg/point.hpp>
+#include <geometry_msgs/msg/vector3.hpp>
+#include <std_msgs/msg/color_rgba.hpp>
+#include <rclcpp/rclcpp.hpp>
+#include <visualization_msgs/msg/marker.hpp>
 #include <voxblox/mesh/mesh_integrator.h>
 #include <voxblox/utils/color_maps.h>
 #include <voxblox_ros/tsdf_server.h>
 
-#include "dynablox/3rd_party/config_utilities.hpp"
 #include "dynablox/common/types.h"
 
 namespace dynablox {
@@ -23,7 +23,7 @@ namespace dynablox {
 class MotionVisualizer {
  public:
   // Config.
-  struct Config : public config_utilities::Config<Config> {
+  struct Config {
     std::string global_frame_name = "map";
 
     // Set RGBA colors in [0, 1] if wanted.
@@ -62,8 +62,6 @@ class MotionVisualizer {
     // Crop all visualizations at this height for better visibility.
     float visualization_max_z = 10000.f;
 
-    Config() { setConfigName("MotionVisualizer"); }
-
    protected:
     void setupParamsAndPrinting() override;
     void checkParams() const override;
@@ -72,7 +70,7 @@ class MotionVisualizer {
   };
 
   // Setup.
-  MotionVisualizer(ros::NodeHandle nh, std::shared_ptr<TsdfLayer> tsdf_layer);
+  MotionVisualizer(rclcpp::Node::SharedPtr nh, std::shared_ptr<TsdfLayer> tsdf_layer);
 
   void setupRos();
 
@@ -101,52 +99,53 @@ class MotionVisualizer {
                          const std::string& ns = "") const;
 
   // ROS msg helper tools.
-  static geometry_msgs::Vector3 setScale(const float scale);
-  static std_msgs::ColorRGBA setColor(const std::vector<float>& color);
-  static std_msgs::ColorRGBA setColor(const voxblox::Color& color);
-  static geometry_msgs::Point setPoint(const Point& point);
-  static geometry_msgs::Point setPoint(const voxblox::Point& point);
+  static geometry_msgs::msg::Vector3 setScale(const float scale);
+  static std_msgs::msg::ColorRGBA setColor(const std::vector<float>& color);
+  static std_msgs::msg::ColorRGBA setColor(const voxblox::Color& color);
+  static geometry_msgs::msg::Point setPoint(const Point& point);
+  static geometry_msgs::msg::Point setPoint(const voxblox::Point& point);
 
  private:
   const Config config_;
   voxblox::ExponentialOffsetIdColorMap color_map_;
-  ros::NodeHandle nh_;
+  rclcpp::Node::SharedPtr nh_;
   std::shared_ptr<TsdfLayer> tsdf_layer_;
   std::shared_ptr<voxblox::MeshIntegrator<TsdfVoxel>> mesh_integrator_;
   std::shared_ptr<voxblox::MeshLayer> mesh_layer_;
 
   // Publishers.
-  ros::Publisher sensor_pose_pub_;
-  ros::Publisher sensor_points_pub_;
-  ros::Publisher detection_points_pub_;
-  ros::Publisher detection_points_comp_pub_;
-  ros::Publisher detection_cluster_pub_;
-  ros::Publisher detection_cluster_comp_pub_;
-  ros::Publisher detection_object_pub_;
-  ros::Publisher detection_object_comp_pub_;
-  ros::Publisher gt_point_pub_;
-  ros::Publisher gt_cluster_pub_;
-  ros::Publisher gt_object_pub_;
-  ros::Publisher ever_free_pub_;
-  ros::Publisher never_free_pub_;
-  ros::Publisher ever_free_slice_pub_;
-  ros::Publisher never_free_slice_pub_;
-  ros::Publisher tsdf_slice_pub_;
-  ros::Publisher point_slice_pub_;
-  ros::Publisher mesh_pub_;
-  ros::Publisher cluster_vis_pub_;
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr sensor_pose_pub_;
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr sensor_points_pub_;
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr detection_points_pub_;
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr detection_points_comp_pub_;
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr detection_cluster_pub_;
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr detection_cluster_comp_pub_;
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr detection_object_pub_;
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr detection_object_comp_pub_;
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr gt_point_pub_;
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr gt_cluster_pub_;
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr gt_object_pub_;
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr ever_free_pub_;
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr never_free_pub_;
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr ever_free_slice_pub_;
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr never_free_slice_pub_;
+  rclcpp::Publisher<pcl_msgs::msg::PointCloud2>::SharedPtr tsdf_slice_pub_;
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr point_slice_pub_;
+  rclcpp::Publisher<voxblox_msgs::msg::Mesh>::SharedPtr mesh_pub_;
+  rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr cluster_vis_pub_;
 
   // Variables.
-  ros::Time current_stamp_;
+  rclcpp::Time current_stamp_;
   bool time_stamp_set_ = false;
 
   // Helper functions.
-  void visualizeGroundTruthAtLevel(
-      const Cloud& cloud, const CloudInfo& cloud_info,
-      const std::function<bool(const PointInfo&)>& check_level,
-      const ros::Publisher& pub, const std::string& ns) const;
+  void MotionVisualizer::visualizeGroundTruthAtLevel(
+    const Cloud& cloud, const CloudInfo& cloud_info,
+    const std::function<bool(const PointInfo&)>& check_level,
+    const std::shared_ptr<rclcpp::PublisherBase>& pub_base,
+    const std::string& ns)
 
-  ros::Time getStamp() const;
+  rclcpp::Time getStamp() const;
 };
 
 }  // namespace dynablox
