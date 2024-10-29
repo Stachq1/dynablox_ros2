@@ -1,24 +1,22 @@
 #include <gflags/gflags.h>
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
 #include "dynablox_ros/visualization/cloud_visualizer.h"
 
 int main(int argc, char** argv) {
-  ros::init(argc, argv, "cloud_visualizer");
-
-  // Always add these arguments for proper logging.
-  config_utilities::RequiredArguments ra(
-      &argc, &argv, {"--logtostderr", "--colorlogtostderr"});
+  rclcpp::init(argc, argv);
 
   // Setup logging.
   google::InitGoogleLogging(argv[0]);
   google::InstallFailureSignalHandler();
   google::ParseCommandLineFlags(&argc, &argv, false);
 
-  // Setup node.
-  ros::NodeHandle nh("~");
-  dynablox::CloudVisualizer visualizer(nh);
+  auto nh = std::make_shared<rclcpp::Node>("cloud_visualizer");
+  auto cloud_visualizer = std::make_shared<dynablox::CloudVisualizer>(nh);
 
-  ros::spin();
+  rclcpp::spin(cloud_visualizer);
+  rclcpp::shutdown();
+
+  rclcpp::spin();
   return 0;
 }
