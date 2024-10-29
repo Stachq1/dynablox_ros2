@@ -13,7 +13,15 @@ int main(int argc, char** argv) {
   auto nh_private = std::make_shared<rclcpp::Node>("tsdf_private");
   auto tsdf_server = std::make_shared<voxblox::TsdfServer>(nh, nh_private);
 
-  rclcpp::spin(node);
+  // Create a MultiThreadedExecutor
+  rclcpp::executors::MultiThreadedExecutor executor;
+
+  // Add both nodes to the executor
+  executor.add_node(nh);
+  executor.add_node(nh_private);
+
+  // Spin both nodes simultaneously
+  executor.spin();
   rclcpp::shutdown();
 
   return 0;
