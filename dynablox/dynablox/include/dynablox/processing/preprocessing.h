@@ -41,7 +41,7 @@ class Preprocessing {
    * @return Success.
    */
   bool processPointcloud(const sensor_msgs::PointCloud2::Ptr& msg,
-                         const tf2::StampedTransform T_M_S, Cloud& cloud,
+                         const tf2::Transform T_M_S, Cloud& cloud,
                          CloudInfo& cloud_info) const;
 
  private:

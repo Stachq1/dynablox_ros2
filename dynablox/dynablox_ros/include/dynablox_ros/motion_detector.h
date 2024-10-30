@@ -11,6 +11,7 @@
 #include <pcl_conversions/pcl_conversions.h>
 #include <pcl_ros/point_cloud.h>
 #include <rclcpp/rclcpp.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 #include <tf2_ros/buffer.h>
 #include <tf2_ros/transform_listener.h>
 #include <voxblox/core/block_hash.h>
@@ -69,12 +70,12 @@ class MotionDetector {
   void setupRos();
 
   // Callbacks.
-  void pointcloudCallback(const sensor_msgs::msg::PointCloud2::Ptr& msg);
+  void pointcloudCallback(const sensor_msgs::msg::PointCloud2::SharedPtr& msg);
 
   // Motion detection pipeline.
   bool lookupTransform(const std::string& target_frame,
                        const std::string& source_frame, uint64_t timestamp,
-                       tf::StampedTransform& result) const;
+                       geometry_msgs::msg::TransformStamped& result) const;
 
   /**
    * @brief Create a mapping of each voxel index to the points it contains. Each

@@ -41,7 +41,10 @@ void MotionDetector::Config::setupParamsAndPrinting() {
 
 MotionDetector::MotionDetector(const rclcpp::Node::SharedPtr& nh,
                                const rclcpp::Node::SharedPtr& nh_private)
-    : nh_(nh), nh_private_(nh_private) {
+    : nh_(nh),
+      nh_private_(nh_private),
+      tf_buffer_(nh_private_->get_clock()),
+      tf_listener_(tf_buffer_) {
   setupMembers();
 
   // Cache frequently used constants.
@@ -53,65 +56,65 @@ MotionDetector::MotionDetector(const rclcpp::Node::SharedPtr& nh,
 }
 
 void MotionDetector::setupMembers() {
-  // Voxblox. Overwrite dependent config parts. Note that this TSDF layer is
-  // shared with all other processing components and is mutable for processing.
-  ros::NodeHandle nh_voxblox(nh_private_, "voxblox");
-  nh_voxblox.setParam("world_frame", config_.global_frame_name);
-  nh_voxblox.setParam("update_mesh_every_n_sec", 0);
-  nh_voxblox.setParam("voxel_carving_enabled",
-                      true);  // Integrate whole ray not only truncation band.
-  nh_voxblox.setParam("allow_clear",
-                      true);  // Integrate rays up to max_ray_length.
-  nh_voxblox.setParam("integrator_threads", config_.num_threads);
+// Create a new node for voxblox parameters
+  auto nh_voxblox = std::make_shared<rclcpp::Node>("voxblox", nh_private_->get_namespace());
 
+  // Declare and set parameters for the TSDF server (Voxblox settings).
+  nh_voxblox->declare_parameter("world_frame", config_.global_frame_name);
+  nh_voxblox->declare_parameter("update_mesh_every_n_sec", 0);
+  nh_voxblox->declare_parameter("voxel_carving_enabled", true);
+  nh_voxblox->declare_parameter("allow_clear", true);
+  nh_voxblox->declare_parameter("integrator_threads", config_.num_threads);
+
+  // Initialize the TSDF server with parameters from the new voxblox node.
   tsdf_server_ = std::make_shared<voxblox::TsdfServer>(nh_voxblox, nh_voxblox);
-  tsdf_layer_.reset(tsdf_server_->getTsdfMapPtr()->getTsdfLayerPtr());
+  tsdf_layer_ = tsdf_server_->getTsdfMapPtr()->getTsdfLayerPtr();
 
   // Preprocessing.
   preprocessing_ = std::make_shared<Preprocessing>(
-      config_utilities::getConfigFromRos<Preprocessing::Config>(
-          ros::NodeHandle(nh_private_, "preprocessing")));
+      config_utilities::getConfigFromNode<Preprocessing::Config>(
+          nh_private_, "preprocessing"));
 
   // Clustering.
   clustering_ = std::make_shared<Clustering>(
-      config_utilities::getConfigFromRos<Clustering::Config>(
-          ros::NodeHandle(nh_private_, "clustering")),
+      config_utilities::getConfigFromNode<Clustering::Config>(
+          nh_private_, "clustering"),
       tsdf_layer_);
 
   // Tracking.
   tracking_ = std::make_shared<Tracking>(
-      config_utilities::getConfigFromRos<Tracking::Config>(
-          ros::NodeHandle(nh_private_, "tracking")));
+      config_utilities::getConfigFromNode<Tracking::Config>(
+          nh_private_, "tracking"));
 
   // Ever-Free Integrator.
-  ros::NodeHandle nh_ever_free(nh_private_, "ever_free_integrator");
-  nh_ever_free.setParam("num_threads", config_.num_threads);
+  nh_private_->declare_parameter("ever_free_integrator.num_threads", config_.num_threads);
   ever_free_integrator_ = std::make_shared<EverFreeIntegrator>(
-      config_utilities::getConfigFromRos<EverFreeIntegrator::Config>(
-          nh_ever_free),
-      tsdf_layer_);
+      config_utilities::getConfigFromNode<EverFreeIntegrator::Config>(
+          nh_private_, "ever_free_integrator"), tsdf_layer_);
 
   // Evaluation.
   if (config_.evaluate) {
-    // NOTE(schmluk): These will be uninitialized if not requested, but then no
-    // config files need to be set.
+    // Initialize evaluator if evaluation is requested.
     evaluator_ = std::make_shared<Evaluator>(
-        config_utilities::getConfigFromRos<Evaluator::Config>(
-            ros::NodeHandle(nh_private_, "evaluation")));
+        config_utilities::getConfigFromNode<Evaluator::Config>(
+            nh_private_, "evaluation"));
   }
 
   // Visualization.
-  visualizer_ = std::make_shared<MotionVisualizer>(
-      ros::NodeHandle(nh_private_, "visualization"), tsdf_layer_);
+  visualizer_ = std::make_shared<MotionVisualizer>(nh_private_, tsdf_layer_, "visualization");
 }
 
 void MotionDetector::setupRos() {
-  lidar_pcl_sub_ = nh_.subscribe("pointcloud", config_.queue_size,
-                                 &MotionDetector::pointcloudCallback, this);
+  lidar_pcl_sub_ = nh_->create_subscription<sensor_msgs::msg::PointCloud2>(
+    "pointcloud", rclcpp::QoS(config_.queue_size),
+    [this](const sensor_msgs::msg::PointCloud2::SharedPtr msg) {
+        this->pointcloudCallback(msg);
+    });
 }
 
+
 void MotionDetector::pointcloudCallback(
-    const sensor_msgs::PointCloud2::Ptr& msg) {
+    const sensor_msgs::msg::PointCloud2::SharedPtr& msg) {
   Timer frame_timer("frame");
   Timer detection_timer("motion_detection");
 
@@ -122,9 +125,10 @@ void MotionDetector::pointcloudCallback(
                                             ? msg->header.frame_id
                                             : config_.sensor_frame_name;
 
-  tf::StampedTransform T_M_S;
+  geometry_msgs::msg::TransformStamped T_M_S;
+  tf2::Transform T_M_S_tf;
   if (!lookupTransform(config_.global_frame_name, sensor_frame_name,
-                       msg->header.stamp.toNSec(), T_M_S)) {
+                       msg->header.stamp.nanoseconds(), T_M_S)) {
     // Getting transform failed, need to skip.
     return;
   }
@@ -135,7 +139,9 @@ void MotionDetector::pointcloudCallback(
   frame_counter_++;
   CloudInfo cloud_info;
   Cloud cloud;
-  preprocessing_->processPointcloud(msg, T_M_S, cloud, cloud_info);
+ 
+  tf2::fromMsg(T_M_S, T_M_S_tf);
+  preprocessing_->processPointcloud(msg, T_M_S, cloud, cloud_info); // What do I do here?
   preprocessing_timer.Stop();
 
   // Build a mapping of all blocks to voxels to points for the scan.
@@ -165,7 +171,7 @@ void MotionDetector::pointcloudCallback(
   // Integrate the pointcloud into the voxblox TSDF map.
   Timer tsdf_timer("motion_detection/tsdf_integration");
   voxblox::Transformation T_G_C;
-  tf::transformTFToKindr(T_M_S, &T_G_C);
+  tf2::transformTFToKindr(T_M_S, &T_G_C);
   tsdf_server_->processPointCloudMessageAndInsert(msg, T_G_C, false);
   tsdf_timer.Stop();
   detection_timer.Stop();
@@ -179,7 +185,7 @@ void MotionDetector::pointcloudCallback(
         evaluator_->getNumberOfEvaluatedFrames() >= config_.shutdown_after) {
       LOG(INFO) << "Evaluated " << config_.shutdown_after
                 << " frames, shutting down";
-      ros::shutdown();
+      rclcpp::shutdown();
     }
   }
 
@@ -194,18 +200,15 @@ void MotionDetector::pointcloudCallback(
 bool MotionDetector::lookupTransform(const std::string& target_frame,
                                      const std::string& source_frame,
                                      uint64_t timestamp,
-                                     tf::StampedTransform& result) const {
-  ros::Time timestamp_ros;
-  timestamp_ros.fromNSec(timestamp);
+                                     geometry_msgs::msg::TransformStamped& result) const {
+  // Convert the timestamp to rclcpp::Time
+  rclcpp::Time timestamp_ros(timestamp);
 
-  // Note(schmluk): We could also wait for transforms here but this is easier
-  // and faster atm.
   try {
-    tf_listener_.lookupTransform(target_frame, source_frame, timestamp_ros,
-                                 result);
-  } catch (tf::TransformException& ex) {
-    LOG(WARNING) << "Could not get sensor transform, skipping pointcloud: "
-                 << ex.what();
+    // Use the lookupTransform method from the tf_buffer
+    result = tf_buffer_.lookupTransform(target_frame, source_frame, timestamp_ros);
+  } catch (const tf2::TransformException& ex) {
+    RCLCPP_WARN(nh_private_->get_logger(), "Could not get sensor transform, skipping pointcloud: %s", ex.what());
     return false;
   }
   return true;
