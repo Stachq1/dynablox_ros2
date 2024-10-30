@@ -16,36 +16,36 @@
 namespace tf2 {
 
 // Function calls copied from eigen_conversions due to absence of the package in ROS 2
-void vectorEigenToMsg(const Eigen::Vector3d &e, geometry_msgs::msg::Vector3 &m) {
+inline void vectorEigenToMsg(const Eigen::Vector3d &e, geometry_msgs::msg::Vector3 &m) {
   m.x = e(0);
   m.y = e(1);
   m.z = e(2);
 }
 
-void vectorMsgToEigen(const geometry_msgs::msg::Vector3 &m, Eigen::Vector3d &e) {
+inline void vectorMsgToEigen(const geometry_msgs::msg::Vector3 &m, Eigen::Vector3d &e) {
   e(0) = m.x;
   e(1) = m.y;
   e(2) = m.z;
 }
 
-void quaternionEigenToMsg(const Eigen::Quaterniond &e, geometry_msgs::msg::Quaternion &m) {
+inline void quaternionEigenToMsg(const Eigen::Quaterniond &e, geometry_msgs::msg::Quaternion &m) {
   m.x = e.x();
   m.y = e.y();
   m.z = e.z();
   m.w = e.w();
 }
 
-void quaternionMsgToEigen(const geometry_msgs::msg::Quaternion &m, Eigen::Quaterniond &e) {
+inline void quaternionMsgToEigen(const geometry_msgs::msg::Quaternion &m, Eigen::Quaterniond &e) {
   e = Eigen::Quaterniond(m.w, m.x, m.y, m.z);
 }
 
-void pointEigenToMsg(const Eigen::Vector3d &e, geometry_msgs::msg::Point &m) {
+inline void pointEigenToMsg(const Eigen::Vector3d &e, geometry_msgs::msg::Point &m) {
   m.x = e(0);
   m.y = e(1);
   m.z = e(2);
 }
 
-void pointMsgToEigen(const geometry_msgs::msg::Point &m, Eigen::Vector3d &e) {
+inline void pointMsgToEigen(const geometry_msgs::msg::Point &m, Eigen::Vector3d &e) {
   e(0) = m.x;
   e(1) = m.y;
   e(2) = m.z;
