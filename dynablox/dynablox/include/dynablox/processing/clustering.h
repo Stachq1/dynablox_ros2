@@ -8,8 +8,7 @@
 #include <pcl/search/flann_search.h>
 #include <pcl/segmentation/extract_clusters.h>
 #include <pcl_conversions/pcl_conversions.h>
-#include <pcl_ros/impl/transforms.hpp>
-#include <pcl_ros/point_cloud.hpp>
+#include <pcl/point_cloud.h>
 #include <voxblox/core/block_hash.h>
 #include <voxblox/core/layer.h>
 #include <voxblox/integrator/integrator_utils.h>

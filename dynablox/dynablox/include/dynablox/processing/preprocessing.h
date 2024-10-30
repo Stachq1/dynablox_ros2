@@ -4,6 +4,7 @@
 #include <string>
 
 #include <pcl/point_cloud.h>
+#include <sensor_msgs/msg/point_cloud2.hpp>
 #include <tf2/transform_datatypes.h>
 
 #include "dynablox/3rd_party/config_utilities.hpp"
@@ -40,7 +41,7 @@ class Preprocessing {
    * @param cloud Cloud to store the processed input point cloud.
    * @return Success.
    */
-  bool processPointcloud(const sensor_msgs::PointCloud2::Ptr& msg,
+  bool processPointcloud(const sensor_msgs::msg::PointCloud2::SharedPtr& msg,
                          const tf2::Transform T_M_S, Cloud& cloud,
                          CloudInfo& cloud_info) const;
 

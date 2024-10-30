@@ -8,7 +8,6 @@
 
 #include <boost/filesystem.hpp>
 #include <pcl/filters/crop_box.h>
-#include <pcl_ros/impl/transforms.hpp>
 
 namespace dynablox {
 

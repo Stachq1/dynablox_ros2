@@ -139,7 +139,7 @@ void MotionDetector::pointcloudCallback(
   frame_counter_++;
   CloudInfo cloud_info;
   Cloud cloud;
- 
+
   tf2::fromMsg(T_M_S, T_M_S_tf);
   preprocessing_->processPointcloud(msg, T_M_S, cloud, cloud_info); // What do I do here?
   preprocessing_timer.Stop();

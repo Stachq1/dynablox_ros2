@@ -2,8 +2,6 @@
 
 #include <vector>
 
-#include <pcl_ros/transforms.hpp>
-
 namespace dynablox {
 
 void Preprocessing::Config::checkParams() const {
@@ -20,7 +18,7 @@ void Preprocessing::Config::setupParamsAndPrinting() {
 Preprocessing::Preprocessing(const Config& config)
     : config_(config.checkValid()) {}
 
-bool Preprocessing::processPointcloud(const sensor_msgs::PointCloud2::Ptr& msg,
+bool Preprocessing::processPointcloud(const sensor_msgs::msg::PointCloud2::SharedPtr& msg,
                                       const tf2::Transform T_M_S,
                                       Cloud& cloud,
                                       CloudInfo& cloud_info) const {
@@ -44,7 +42,7 @@ bool Preprocessing::processPointcloud(const sensor_msgs::PointCloud2::Ptr& msg,
   }
 
   // Transform the cloud to world frame.
-  pcl_ros::transformPointCloud(cloud, cloud, T_M_S);
+  pcl::transformPointCloud(cloud, cloud, T_M_S); // Worry about this later maybe?
   return true;
 }
 
