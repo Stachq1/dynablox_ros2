@@ -15,6 +15,7 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>minkindr</depend>
+  <depend>glog</depend>
   <depend>pcl_conversions</depend>
   <depend>rclcpp</depend>
   <depend>sensor_msgs</depend>

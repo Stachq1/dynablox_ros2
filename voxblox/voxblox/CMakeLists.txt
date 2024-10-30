@@ -10,6 +10,7 @@ find_package(ament_cmake REQUIRED)
 
 find_package(Boost REQUIRED COMPONENTS system)
 find_package(Eigen3 REQUIRED)
+find_package(glog REQUIRED)
 find_package(minkindr REQUIRED)
 find_package(OpenMP REQUIRED)
 find_package(Protobuf REQUIRED)
@@ -63,6 +64,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
   ${Boost_INCLUDE_DIRS}
   ${Eigen3_INCLUDE_DIRS}
+  ${glog_INCLUDE_DIRS}
   ${minkindr_INCLUDE_DIRS}
   ${PCL_INCLUDE_DIRS}
 )
@@ -79,7 +81,7 @@ ament_target_dependencies(${PROJECT_NAME}
   Threads
 )
 
-target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_proto)
+target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_proto glog::glog)
 
 # IDEs should put the headers in a nice place
 source_group(TREE "${PROJECT_SOURCE_DIR}/include" PREFIX "Header Files" FILES ${HEADER_LIST})

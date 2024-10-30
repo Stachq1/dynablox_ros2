@@ -3,6 +3,7 @@ project(voxblox_ros)
 
 # Find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(glog REQUIRED)
 find_package(minkindr REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
@@ -54,10 +55,7 @@ ament_target_dependencies(${PROJECT_NAME}
 add_executable(tsdf_server
   src/tsdf_server_node.cc
 )
-target_link_libraries(tsdf_server ${PROJECT_NAME})
-
-# Add the Voxblox generated .pb.h files to include directories
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/..)
+target_link_libraries(tsdf_server ${PROJECT_NAME} glog::glog)
 
 ################
 # INSTALLATION #
