@@ -14,5 +14,4 @@
   
   <!-- Visualize -->
   <node type="rviz" name="rviz" pkg="rviz" args="-d $(find dynablox_ros)/config/rviz/cloud_visualizer.rviz"/>
-
 </launch>
