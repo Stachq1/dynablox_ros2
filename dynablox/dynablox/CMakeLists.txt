@@ -57,9 +57,9 @@ install(DIRECTORY include/
 )
 
 # Export the package
-ament_export_libraries(${PROJECT_NAME} ${PROJECT_NAME})
 ament_export_dependencies(PCL pcl_conversions sensor_msgs tf2 voxblox)
 ament_export_include_directories(include)
+ament_export_libraries(${PROJECT_NAME})
 
 # Include the necessary ament macros
 ament_package()
