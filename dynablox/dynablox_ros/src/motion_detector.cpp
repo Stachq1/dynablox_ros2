@@ -8,6 +8,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include <Eigen/Geometry>
+
 #include <minkindr_conversions/kindr_tf.h>
 #include <pcl/segmentation/extract_clusters.h>
 #include <pcl_conversions/pcl_conversions.h>
@@ -112,7 +114,6 @@ void MotionDetector::setupRos() {
     });
 }
 
-
 void MotionDetector::pointcloudCallback(
     const sensor_msgs::msg::PointCloud2::SharedPtr& msg) {
   Timer frame_timer("frame");
@@ -126,7 +127,6 @@ void MotionDetector::pointcloudCallback(
                                             : config_.sensor_frame_name;
 
   geometry_msgs::msg::TransformStamped T_M_S;
-  tf2::Transform T_M_S_tf;
   if (!lookupTransform(config_.global_frame_name, sensor_frame_name,
                        msg->header.stamp.nanoseconds(), T_M_S)) {
     // Getting transform failed, need to skip.
@@ -140,8 +140,7 @@ void MotionDetector::pointcloudCallback(
   CloudInfo cloud_info;
   Cloud cloud;
 
-  tf2::fromMsg(T_M_S, T_M_S_tf);
-  preprocessing_->processPointcloud(msg, T_M_S, cloud, cloud_info); // What do I do here?
+  preprocessing_->processPointcloud(msg, T_M_S, cloud, cloud_info, rclcpp::Time(msg.header.stamp).nanoseconds()); // What do I do here?
   preprocessing_timer.Stop();
 
   // Build a mapping of all blocks to voxels to points for the scan.
@@ -326,6 +325,28 @@ void MotionDetector::blockwiseBuildPointMap(
           std::make_pair(block_index, voxel_points_pair.first));
     }
   }
+}
+
+Eigen::Matrix4f MotionDetector::transformStampedToMatrix(const geometry_msgs::msg::TransformStamped& transform_stamped) {
+  Eigen::Matrix4f transform = Eigen::Matrix4f::Identity();
+
+  // Extract translation
+  transform(0, 3) = transform_stamped.transform.translation.x;
+  transform(1, 3) = transform_stamped.transform.translation.y;
+  transform(2, 3) = transform_stamped.transform.translation.z;
+
+  // Extract rotation and convert to Eigen quaternion
+  Eigen::Quaternionf q(
+      transform_stamped.transform.rotation.w,
+      transform_stamped.transform.rotation.x,
+      transform_stamped.transform.rotation.y,
+      transform_stamped.transform.rotation.z
+  );
+
+  // Convert quaternion to rotation matrix and place it in the top-left 3x3 part
+  transform.block<3, 3>(0, 0) = q.toRotationMatrix();
+
+  return transform;
 }
 
 }  // namespace dynablox

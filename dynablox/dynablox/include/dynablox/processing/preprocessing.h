@@ -3,9 +3,10 @@
 
 #include <string>
 
+#include <Eigen/Dense>
+
 #include <pcl/point_cloud.h>
 #include <sensor_msgs/msg/point_cloud2.hpp>
-#include <tf2/transform_datatypes.h>
 
 #include "dynablox/3rd_party/config_utilities.hpp"
 #include "dynablox/common/types.h"
@@ -39,11 +40,12 @@ class Preprocessing {
    * @param T_M_S Transform sensor (S) to map (M).
    * @param cloud_info Cloud info to store the data of the input cloud.
    * @param cloud Cloud to store the processed input point cloud.
+   * @param msg_timestamp Timestamp of the pointcloud (passed separatly to avoid using ROS)
    * @return Success.
    */
   bool processPointcloud(const sensor_msgs::msg::PointCloud2::SharedPtr& msg,
-                         const tf2::Transform T_M_S, Cloud& cloud,
-                         CloudInfo& cloud_info) const;
+                         const Eigen::Matrix4f& T_M_S, Cloud& cloud,
+                         CloudInfo& cloud_info, std::uint64_t msg_timestamp) const;
 
  private:
   // Config.

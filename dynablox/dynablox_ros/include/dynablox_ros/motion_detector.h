@@ -124,6 +124,9 @@ class MotionDetector {
       CloudInfo& cloud_info) const;
 
  private:
+  Eigen::Matrix4f MotionDetector::transformStampedToMatrix(
+    const geometry_msgs::msg::TransformStamped& transform_stamped);
+
   const Config config_;
 
   // ROS.
