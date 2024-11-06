@@ -47,8 +47,8 @@ ament_target_dependencies(${PROJECT_NAME}
 # Install the library
 install(TARGETS ${PROJECT_NAME}
   EXPORT export_${PROJECT_NAME}
-  LIBRARY DESTINATION lib/${PROJECT_NAME}
-  ARCHIVE DESTINATION lib/${PROJECT_NAME}
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
 )
 
 # Install headers if applicable (you may need to adjust the path)
