@@ -13,8 +13,6 @@
 #include <minkindr_conversions/kindr_tf.h>
 #include <pcl/segmentation/extract_clusters.h>
 #include <pcl_conversions/pcl_conversions.h>
-#include <pcl_ros/impl/transforms.hpp>
-#include <pcl_ros/point_cloud.h>
 #include <rclcpp/rclcpp.hpp>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <visualization_msgs/msg/marker.hpp>

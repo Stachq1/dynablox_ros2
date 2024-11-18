@@ -18,10 +18,10 @@ find_package(visualization_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
-find_package(pcl_ros REQUIRED)
 find_package(pcl_conversions REQUIRED)
 find_package(voxblox REQUIRED)
 find_package(voxblox_msgs REQUIRED)
+find_package(voxblox_ros REQUIRED)
 find_package(dynablox REQUIRED)
 
 # Include directories
@@ -43,10 +43,10 @@ ament_target_dependencies(${PROJECT_NAME}
   tf2
   tf2_ros
   tf2_geometry_msgs
-  pcl_ros
   pcl_conversions
   voxblox
   voxblox_msgs
+  voxblox_ros
   dynablox
 )
 
@@ -73,7 +73,7 @@ install(DIRECTORY launch
 )
 
 # Export package dependencies
-ament_export_dependencies(rclcpp sensor_msgs std_msgs geometry_msgs visualization_msgs tf2 tf2_ros tf2_geometry_msgs pcl_ros pcl_conversions voxblox voxblox_msgs dynablox)
+ament_export_dependencies(rclcpp sensor_msgs std_msgs geometry_msgs visualization_msgs tf2 tf2_ros tf2_geometry_msgs pcl_conversions voxblox voxblox_ros voxblox_msgs dynablox)
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
 
