@@ -18,10 +18,6 @@ class CloudVisualizer {
 
     // How frequently visualizations should be republished [s].
     float refresh_rate = 0.25;
-
-   protected:
-    void setupParamsAndPrinting();
-    void checkParams() const;
   };
 
   // Setup.

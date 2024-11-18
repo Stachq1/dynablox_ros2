@@ -11,19 +11,6 @@
 
 namespace dynablox {
 
-void CloudVisualizer::Config::checkParams() const {
-  // TODO: Use ROS 2 functionality instead
-  checkParamCond(std::filesystem::exists(file_path),
-                 "Target file '" + file_path + "' does not exist.");
-  checkParamGT(refresh_rate, 0.f, "refresh_rate");
-}
-
-void CloudVisualizer::Config::setupParamsAndPrinting() {
-  // TODO: Use ROS 2 functionality instead
-  setupParam("file_path", &file_path);
-  setupParam("refresh_rate", &refresh_rate, "s");
-}
-
 CloudVisualizer::CloudVisualizer(rclcpp::Node::SharedPtr nh) :
       visualizer_(nh, std::make_shared<TsdfLayer>(0.2, 16)),
       nh_(nh) {

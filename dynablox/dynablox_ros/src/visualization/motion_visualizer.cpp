@@ -7,63 +7,6 @@
 
 namespace dynablox {
 
-void MotionVisualizer::Config::checkParams() const {
-  // TODO: Use ROS 2 functionality instead
-  checkParamGT(static_point_scale, 0.f, "static_point_scale");
-  checkParamGT(dynamic_point_scale, 0.f, "dynamic_point_scale");
-  checkParamGT(sensor_scale, 0.f, "sensor_scale");
-  checkParamGT(cluster_line_width, 0.f, "cluster_line_width");
-  checkParamGT(color_wheel_num_colors, 0, "color_wheel_num_colors");
-  checkColor(static_point_color, "static_point_color");
-  checkColor(dynamic_point_color, "dynamic_point_color");
-  checkColor(sensor_color, "sensor_color");
-  checkColor(true_positive_color, "true_positive_color");
-  checkColor(false_positive_color, "false_positive_color");
-  checkColor(true_negative_color, "true_negative_color");
-  checkColor(false_negative_color, "false_negative_color");
-  checkColor(out_of_bounds_color, "out_of_bounds_color");
-  checkColor(ever_free_color, "ever_free_color");
-  checkColor(never_free_color, "never_free_color");
-  checkColor(point_level_slice_color, "point_level_slice_color");
-  checkColor(cluster_level_slice_color, "cluster_level_slice_color");
-}
-
-void MotionVisualizer::Config::setupParamsAndPrinting() {
-  // TODO: Use ROS 2 functionality instead
-  setupParam("global_frame_name", &global_frame_name);
-  setupParam("static_point_color", &static_point_color);
-  setupParam("dynamic_point_color", &dynamic_point_color);
-  setupParam("sensor_color", &sensor_color);
-  setupParam("static_point_scale", &static_point_scale, "m");
-  setupParam("dynamic_point_scale", &dynamic_point_scale, "m");
-  setupParam("sensor_scale", &sensor_scale, "m");
-  setupParam("cluster_line_width", &cluster_line_width, "m");
-  setupParam("color_wheel_num_colors", &color_wheel_num_colors);
-  setupParam("color_clusters", &color_clusters);
-  setupParam("true_positive_color", &true_positive_color);
-  setupParam("false_positive_color", &false_positive_color);
-  setupParam("true_negative_color", &true_negative_color);
-  setupParam("false_negative_color", &false_negative_color);
-  setupParam("out_of_bounds_color", &out_of_bounds_color);
-  setupParam("ever_free_color", &ever_free_color);
-  setupParam("never_free_color", &never_free_color);
-  setupParam("point_level_slice_color", &point_level_slice_color);
-  setupParam("cluster_level_slice_color", &cluster_level_slice_color);
-  setupParam("slice_height", &slice_height, "m");
-  setupParam("slice_relative_to_sensor", &slice_relative_to_sensor);
-  setupParam("visualization_max_z", &visualization_max_z, "m");
-}
-
-void MotionVisualizer::Config::checkColor(const std::vector<float>& color,
-                                          const std::string& name) const {
-  // TODO: Use ROS 2 functionality instead
-  checkParamEq(static_cast<int>(color.size()), 4, name + ".size");
-  for (size_t i = 0; i < std::min(color.size(), std::size_t(4u)); ++i) {
-    checkParamGE(color[i], 0.f, name + "[" + std::to_string(i) + "]");
-    checkParamLE(color[i], 1.f, name + "[" + std::to_string(i) + "]");
-  }
-}
-
 MotionVisualizer::MotionVisualizer(rclcpp::Node::SharedPtr nh,
                                    std::shared_ptr<TsdfLayer> tsdf_layer)
       nh_(std::move(nh)),

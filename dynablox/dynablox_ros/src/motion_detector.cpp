@@ -23,24 +23,6 @@ namespace dynablox {
 
 using Timer = voxblox::timing::Timer;
 
-void MotionDetector::Config::checkParams() const {
-  checkParamCond(!global_frame_name.empty(),
-                 "'global_frame_name' may not be empty.");
-  checkParamGE(num_threads, 1, "num_threads");
-  checkParamGE(queue_size, 0, "queue_size");
-}
-
-void MotionDetector::Config::setupParamsAndPrinting() {
-  setupParam("global_frame_name", &global_frame_name);
-  setupParam("sensor_frame_name", &sensor_frame_name);
-  setupParam("queue_size", &queue_size);
-  setupParam("evaluate", &evaluate);
-  setupParam("visualize", &visualize);
-  setupParam("verbose", &verbose);
-  setupParam("num_threads", &num_threads);
-  setupParam("shutdown_after", &shutdown_after);
-}
-
 MotionDetector::MotionDetector(const rclcpp::Node::SharedPtr& nh,
                                const rclcpp::Node::SharedPtr& nh_private)
     : nh_(nh),

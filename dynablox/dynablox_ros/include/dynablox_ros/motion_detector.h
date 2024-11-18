@@ -56,10 +56,6 @@ class MotionDetector {
 
     // If >0, shutdown after this many evaluated frames.
     int shutdown_after = 0;
-
-   protected:
-    void setupParamsAndPrinting();
-    void checkParams() const;
   };
 
   // Constructor.
