@@ -10,7 +10,7 @@
 
 #include <Eigen/Geometry>
 
-#include <minkindr/kindr_tf.h>
+#include <minkindr/kindr_msg.h>
 #include <pcl/segmentation/extract_clusters.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <rclcpp/rclcpp.hpp>
@@ -150,7 +150,7 @@ void MotionDetector::pointcloudCallback(
   // Integrate the pointcloud into the voxblox TSDF map.
   Timer tsdf_timer("motion_detection/tsdf_integration");
   voxblox::Transformation T_G_C;
-  tf2::transformTFToKindr(T_M_S, &T_G_C);
+  tf2::transformMsgToKindr(T_M_S.transform, &T_G_C);
   tsdf_server_->processPointCloudMessageAndInsert(msg, T_G_C, false);
   tsdf_timer.Stop();
   detection_timer.Stop();
