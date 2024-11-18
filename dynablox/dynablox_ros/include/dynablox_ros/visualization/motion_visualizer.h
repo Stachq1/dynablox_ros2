@@ -10,6 +10,7 @@
 #include <geometry_msgs/msg/point.hpp>
 #include <geometry_msgs/msg/vector3.hpp>
 #include <std_msgs/msg/color_rgba.hpp>
+#include <pcl_conversions/pcl_conversions.h>
 #include <rclcpp/rclcpp.hpp>
 #include <visualization_msgs/msg/marker.hpp>
 #include <voxblox/mesh/mesh_integrator.h>
@@ -123,7 +124,7 @@ class MotionVisualizer {
   rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr never_free_pub_;
   rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr ever_free_slice_pub_;
   rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr never_free_slice_pub_;
-  rclcpp::Publisher<pcl_msgs::msg::PointCloud2>::SharedPtr tsdf_slice_pub_;
+  rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr tsdf_slice_pub_;
   rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr point_slice_pub_;
   rclcpp::Publisher<voxblox_msgs::msg::Mesh>::SharedPtr mesh_pub_;
   rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr cluster_vis_pub_;

@@ -43,7 +43,7 @@ void MotionVisualizer::setupRos() {
   mesh_pub_ = nh_->create_publisher<voxblox_msgs::msg::Mesh>("mesh", qos_profile);
   ever_free_slice_pub_ = nh_->create_publisher<visualization_msgs::msg::Marker>("slice/ever_free", qos_profile);
   never_free_slice_pub_ = nh_->create_publisher<visualization_msgs::msg::Marker>("slice/never_free", qos_profile);
-  tsdf_slice_pub_ = nh_->create_publisher<pcl_msgs::msg::PointCloud2>("slice/tsdf", qos_profile);
+  tsdf_slice_pub_ = nh_->create_publisher<sensor_msgs::msg::PointCloud2>("slice/tsdf", qos_profile);
   point_slice_pub_ = nh_->create_publisher<visualization_msgs::msg::Marker>("slice/points", qos_profile);
   cluster_vis_pub_ = nh_->create_publisher<visualization_msgs::msg::MarkerArray>("clusters", qos_profile);
 }
@@ -74,7 +74,7 @@ void MotionVisualizer::visualizeAll(const Cloud& cloud,
 
 void MotionVisualizer::visualizeClusters(const Clusters& clusters,
                                          const std::string& ns) const {
-  if (cluster_vis_pub_->getNumSubscribers() == 0u) {
+  if (cluster_vis_pub_->get_subscription_count() == 0u) {
     return;
   }
 
@@ -153,8 +153,8 @@ void MotionVisualizer::visualizeClusters(const Clusters& clusters,
 }
 
 void MotionVisualizer::visualizeEverFree() const {
-  const bool ever_free = ever_free_pub_.getNumSubscribers() > 0u;
-  const bool never_free = never_free_pub_.getNumSubscribers() > 0u;
+  const bool ever_free = ever_free_pub_.get_subscription_count() > 0u;
+  const bool never_free = never_free_pub_.get_subscription_count() > 0u;
 
   if (!ever_free && !never_free) {
     return;
@@ -222,8 +222,8 @@ void MotionVisualizer::visualizeEverFree() const {
 }
 
 void MotionVisualizer::visualizeEverFreeSlice(const float slice_height) const {
-  const bool ever_free = ever_free_slice_pub_->getNumSubscribers() > 0u;
-  const bool never_free = never_free_slice_pub_->getNumSubscribers() > 0u;
+  const bool ever_free = ever_free_slice_pub_->get_subscription_count() > 0u;
+  const bool never_free = never_free_slice_pub_->get_subscription_count() > 0u;
 
   if (!ever_free && !never_free) {
     return;
@@ -307,7 +307,7 @@ void MotionVisualizer::visualizeEverFreeSlice(const float slice_height) const {
 }
 
 void MotionVisualizer::visualizeTsdfSlice(const float slice_height) const {
-  if (tsdf_slice_pub_->getNumSubscribers() == 0u) {
+  if (tsdf_slice_pub_->get_subscription_count() == 0u) {
     return;
   }
   pcl::PointCloud<pcl::PointXYZI> pointcloud;
@@ -315,14 +315,17 @@ void MotionVisualizer::visualizeTsdfSlice(const float slice_height) const {
   voxblox::createDistancePointcloudFromTsdfLayerSlice(
       *tsdf_layer_, 2u, slice_height, &pointcloud);
 
-  pointcloud.header.frame_id = config_.global_frame_name;
-  pointcloud.header.stamp = getStamp(); // Could be very wrong?
-  tsdf_slice_pub_->publish(pointcloud);
+  sensor_msgs::msg::PointCloud2 ros_pointcloud;
+  pcl::toROSMsg(pointcloud, ros_pointcloud);
+
+  ros_pointcloud.header.frame_id = config_.global_frame_name;
+  ros_pointcloud.header.stamp = getStamp(); // Could be very wrong?
+  tsdf_slice_pub_->publish(ros_pointcloud);
 }
 
 void MotionVisualizer::visualizeSlicePoints(const Cloud& cloud,
                                             const CloudInfo& cloud_info) const {
-  if (point_slice_pub_->getNumSubscribers() == 0u) {
+  if (point_slice_pub_->get_subscription_count() == 0u) {
     return;
   }
 
@@ -385,19 +388,19 @@ void MotionVisualizer::visualizeGroundTruth(const Cloud& cloud,
     return;
   }
   // Go through all levels if it has subscribers.
-  if (gt_point_pub_->getNumSubscribers() > 0) {
+  if (gt_point_pub_->get_subscription_count() > 0) {
     visualizeGroundTruthAtLevel(
         cloud, cloud_info,
         [](const PointInfo& point) { return point.ever_free_level_dynamic; },
         gt_point_pub_, ns);
   }
-  if (gt_cluster_pub_->getNumSubscribers() > 0) {
+  if (gt_cluster_pub_->get_subscription_count() > 0) {
     visualizeGroundTruthAtLevel(
         cloud, cloud_info,
         [](const PointInfo& point) { return point.cluster_level_dynamic; },
         gt_cluster_pub_, ns);
   }
-  if (gt_object_pub_->getNumSubscribers() > 0) {
+  if (gt_object_pub_->get_subscription_count() > 0) {
     visualizeGroundTruthAtLevel(
         cloud, cloud_info,
         [](const PointInfo& point) { return point.object_level_dynamic; },
@@ -454,7 +457,7 @@ void MotionVisualizer::visualizeGroundTruthAtLevel(
 }
 
 void MotionVisualizer::visualizeLidarPose(const CloudInfo& cloud_info) const {
-  if (sensor_pose_pub_->getNumSubscribers() == 0u) {
+  if (sensor_pose_pub_->get_subscription_count() == 0u) {
     return;
   }
   visualization_msgs::msg::Marker result;
@@ -471,7 +474,7 @@ void MotionVisualizer::visualizeLidarPose(const CloudInfo& cloud_info) const {
 }
 
 void MotionVisualizer::visualizeLidarPoints(const Cloud& cloud) const {
-  if (sensor_points_pub_->getNumSubscribers() == 0u) {
+  if (sensor_points_pub_->get_subscription_count() == 0u) {
     return;
   }
   visualization_msgs::msg::Marker result;
@@ -500,8 +503,8 @@ void MotionVisualizer::visualizeLidarPoints(const Cloud& cloud) const {
 
 void MotionVisualizer::visualizePointDetections(
     const Cloud& cloud, const CloudInfo& cloud_info) const {
-  const bool dynamic = detection_points_pub_->getNumSubscribers() > 0u;
-  const bool comp = detection_points_comp_pub_->getNumSubscribers() > 0u;
+  const bool dynamic = detection_points_pub_->get_subscription_count() > 0u;
+  const bool comp = detection_points_comp_pub_->get_subscription_count() > 0u;
 
   if (!dynamic && !comp) {
     return;
@@ -563,8 +566,8 @@ void MotionVisualizer::visualizePointDetections(
 void MotionVisualizer::visualizeClusterDetections(
     const Cloud& cloud, const CloudInfo& cloud_info,
     const Clusters& clusters) const {
-  const bool dynamic = detection_cluster_pub_->getNumSubscribers() > 0u;
-  const bool comp = detection_cluster_comp_pub_->getNumSubscribers() > 0u;
+  const bool dynamic = detection_cluster_pub_->get_subscription_count() > 0u;
+  const bool comp = detection_cluster_comp_pub_->get_subscription_count() > 0u;
 
   if (!dynamic && !comp) {
     return;
@@ -642,8 +645,8 @@ void MotionVisualizer::visualizeObjectDetections(
     const Clusters& clusters) const {
   // TODO(schmluk): This is currently copied from the clusters, it simply tries
   // to do color associations for a bit more consistency during visualization.
-  const bool dynamic = detection_object_pub_->getNumSubscribers() > 0u;
-  const bool comp = detection_object_comp_pub_->getNumSubscribers() > 0u;
+  const bool dynamic = detection_object_pub_->get_subscription_count() > 0u;
+  const bool comp = detection_object_comp_pub_->get_subscription_count() > 0u;
 
   if (!dynamic && !comp) {
     return;
@@ -714,7 +717,7 @@ void MotionVisualizer::visualizeObjectDetections(
 }
 
 void MotionVisualizer::visualizeMesh() const {
-  if (mesh_pub_->getNumSubscribers() == 0u) {
+  if (mesh_pub_->get_subscription_count() == 0u) {
     return;
   }
   mesh_integrator_->generateMesh(true, true);

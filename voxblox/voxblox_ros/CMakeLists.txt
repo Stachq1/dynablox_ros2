@@ -61,11 +61,11 @@ target_link_libraries(tsdf_server ${PROJECT_NAME} glog::glog)
 # INSTALLATION #
 ################
 
-# Install targets
-install(TARGETS
-  ${PROJECT_NAME}
-  tsdf_server
-  DESTINATION lib/${PROJECT_NAME}
+install(TARGETS ${PROJECT_NAME}
+  EXPORT export_${PROJECT_NAME}
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
 )
 
 # Install headers
