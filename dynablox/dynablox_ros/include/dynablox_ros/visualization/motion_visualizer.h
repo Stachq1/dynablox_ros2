@@ -4,6 +4,7 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <tuple>
 #include <unordered_map>
 #include <vector>
 
@@ -133,12 +134,13 @@ class MotionVisualizer {
   rclcpp::Time current_stamp_;
   bool time_stamp_set_ = false;
 
+  using MarkerTuple = std::tuple<visualization_msgs::msg::Marker, visualization_msgs::msg::Marker>;
+
   // Helper functions.
-  void MotionVisualizer::visualizeGroundTruthAtLevel(
+  MarkerTuple visualizeGroundTruthAtLevel(
     const Cloud& cloud, const CloudInfo& cloud_info,
     const std::function<bool(const PointInfo&)>& check_level,
-    const std::shared_ptr<rclcpp::PublisherBase>& pub_base,
-    const std::string& ns)
+    const std::string& ns) const;
 
   rclcpp::Time getStamp() const;
 };

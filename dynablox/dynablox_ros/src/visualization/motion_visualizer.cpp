@@ -9,8 +9,8 @@ namespace dynablox {
 
 MotionVisualizer::MotionVisualizer(rclcpp::Node::SharedPtr nh,
                                    std::shared_ptr<TsdfLayer> tsdf_layer)
-      nh_(std::move(nh)),
-      tsdf_layer_(std::move(tsdf_layer)) {
+      : nh_(std::move(nh)),
+        tsdf_layer_(std::move(tsdf_layer)) {
   color_map_.setItemsPerRevolution(config_.color_wheel_num_colors);
   // Setup mesh integrator.
   mesh_layer_ = std::make_shared<voxblox::MeshLayer>(tsdf_layer_->block_size());
@@ -51,7 +51,7 @@ void MotionVisualizer::setupRos() {
 void MotionVisualizer::visualizeAll(const Cloud& cloud,
                                     const CloudInfo& cloud_info,
                                     const Clusters& clusters) {
-  current_stamp_ = rclcpp::Time(cloud_info.timestamp, RCL_SYSTEM_TIME)
+  current_stamp_ = rclcpp::Time(cloud_info.timestamp, RCL_SYSTEM_TIME);
   time_stamp_set_ = true;
   visualizeLidarPose(cloud_info);
   visualizeLidarPoints(cloud);
@@ -148,13 +148,13 @@ void MotionVisualizer::visualizeClusters(const Clusters& clusters,
     array_msg.markers.push_back(msg);
   }
   if (!array_msg.markers.empty()) {
-    cluster_vis_pub_.publish(array_msg);
+    cluster_vis_pub_->publish(array_msg);
   }
 }
 
 void MotionVisualizer::visualizeEverFree() const {
-  const bool ever_free = ever_free_pub_.get_subscription_count() > 0u;
-  const bool never_free = never_free_pub_.get_subscription_count() > 0u;
+  const bool ever_free = ever_free_pub_->get_subscription_count() > 0u;
+  const bool never_free = never_free_pub_->get_subscription_count() > 0u;
 
   if (!ever_free && !never_free) {
     return;
@@ -337,7 +337,7 @@ void MotionVisualizer::visualizeSlicePoints(const Cloud& cloud,
   result.type = visualization_msgs::msg::Marker::POINTS;
   result.scale = setScale(config_.dynamic_point_scale);
 
-  visualization_msgs::Marker result_comp;
+  visualization_msgs::msg::Marker result_comp;
   result_comp.action = visualization_msgs::msg::Marker::ADD;
   result_comp.id = 1;
   result_comp.header.stamp = getStamp();
@@ -389,29 +389,28 @@ void MotionVisualizer::visualizeGroundTruth(const Cloud& cloud,
   }
   // Go through all levels if it has subscribers.
   if (gt_point_pub_->get_subscription_count() > 0) {
-    visualizeGroundTruthAtLevel(
-        cloud, cloud_info,
-        [](const PointInfo& point) { return point.ever_free_level_dynamic; },
-        gt_point_pub_, ns);
+    auto [result, comp] = visualizeGroundTruthAtLevel(cloud, cloud_info,
+        [](const PointInfo& point) { return point.ever_free_level_dynamic; }, ns);
+    gt_point_pub_->publish(result);
+    gt_point_pub_->publish(comp);
   }
   if (gt_cluster_pub_->get_subscription_count() > 0) {
-    visualizeGroundTruthAtLevel(
-        cloud, cloud_info,
-        [](const PointInfo& point) { return point.cluster_level_dynamic; },
-        gt_cluster_pub_, ns);
+    auto [result, comp] = visualizeGroundTruthAtLevel(cloud, cloud_info,
+        [](const PointInfo& point) { return point.cluster_level_dynamic; }, ns);
+    gt_cluster_pub_->publish(result);
+    gt_cluster_pub_->publish(comp);
   }
   if (gt_object_pub_->get_subscription_count() > 0) {
-    visualizeGroundTruthAtLevel(
-        cloud, cloud_info,
-        [](const PointInfo& point) { return point.object_level_dynamic; },
-        gt_object_pub_, ns);
+    auto [result, comp] = visualizeGroundTruthAtLevel(cloud, cloud_info,
+        [](const PointInfo& point) { return point.object_level_dynamic; }, ns);
+    gt_object_pub_->publish(result);
+    gt_object_pub_->publish(comp);
   }
 }
 
-void MotionVisualizer::visualizeGroundTruthAtLevel(
+MarkerTuple MotionVisualizer::visualizeGroundTruthAtLevel(
     const Cloud& cloud, const CloudInfo& cloud_info,
     const std::function<bool(const PointInfo&)>& check_level,
-    const std::shared_ptr<rclcpp::PublisherBase>& pub_base,
     const std::string& ns) const {
   // Common properties.
   visualization_msgs::msg::Marker result;
@@ -452,8 +451,7 @@ void MotionVisualizer::visualizeGroundTruthAtLevel(
       comp.colors.push_back(setColor(config_.true_negative_color));
     }
   }
-  pub->publish(result);
-  pub->publish(comp);
+  return std::make_tuple(result, comp);
 }
 
 void MotionVisualizer::visualizeLidarPose(const CloudInfo& cloud_info) const {
@@ -776,7 +774,7 @@ rclcpp::Time MotionVisualizer::getStamp() const {
   if (time_stamp_set_) {
     return current_stamp_;
   } else {
-    return rclcpp::Time::now();
+    return nh_->get_clock()->now();
   }
 }
 

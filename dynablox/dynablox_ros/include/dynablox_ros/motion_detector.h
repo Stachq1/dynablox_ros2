@@ -119,7 +119,7 @@ class MotionDetector {
       CloudInfo& cloud_info) const;
 
  private:
-  Eigen::Matrix4f MotionDetector::transformStampedToMatrix(
+  Eigen::Matrix4f transformStampedToMatrix(
     const geometry_msgs::msg::TransformStamped& transform_stamped);
 
   const Config config_;
@@ -127,7 +127,7 @@ class MotionDetector {
   // ROS.
   rclcpp::Node::SharedPtr nh_;
   rclcpp::Node::SharedPtr nh_private_;
-  rclcpp::Subscription lidar_pcl_sub_;
+  rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr lidar_pcl_sub_;
 
   tf2_ros::Buffer tf_buffer_;
   tf2_ros::TransformListener tf_listener_;

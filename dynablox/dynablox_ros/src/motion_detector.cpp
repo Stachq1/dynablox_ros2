@@ -10,7 +10,7 @@
 
 #include <Eigen/Geometry>
 
-#include <minkindr_conversions/kindr_tf.h>
+#include <minkindr/kindr_tf.h>
 #include <pcl/segmentation/extract_clusters.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <rclcpp/rclcpp.hpp>
@@ -50,7 +50,7 @@ void MotionDetector::setupMembers() {
 
   // Initialize the TSDF server with parameters from the new voxblox node.
   tsdf_server_ = std::make_shared<voxblox::TsdfServer>(nh_voxblox, nh_voxblox);
-  tsdf_layer_ = tsdf_server_->getTsdfMapPtr()->getTsdfLayerPtr();
+  tsdf_layer_.reset(tsdf_server_->getTsdfMapPtr()->getTsdfLayerPtr());
 
   // Preprocessing.
   preprocessing_ = std::make_shared<Preprocessing>(
@@ -108,7 +108,7 @@ void MotionDetector::pointcloudCallback(
 
   geometry_msgs::msg::TransformStamped T_M_S;
   if (!lookupTransform(config_.global_frame_name, sensor_frame_name,
-                       msg->header.stamp.nanoseconds(), T_M_S)) {
+                       rclcpp::Time(msg->header.stamp).nanoseconds(), T_M_S)) {
     // Getting transform failed, need to skip.
     return;
   }
@@ -120,7 +120,7 @@ void MotionDetector::pointcloudCallback(
   CloudInfo cloud_info;
   Cloud cloud;
 
-  preprocessing_->processPointcloud(msg, T_M_S, cloud, cloud_info, rclcpp::Time(msg.header.stamp).nanoseconds()); // What do I do here?
+  preprocessing_->processPointcloud(msg, T_M_S, cloud, cloud_info, rclcpp::Time(msg->header.stamp).nanoseconds()); // What do I do here?
   preprocessing_timer.Stop();
 
   // Build a mapping of all blocks to voxels to points for the scan.

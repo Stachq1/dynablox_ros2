@@ -44,7 +44,7 @@ CloudVisualizer::CloudVisualizer(rclcpp::Node::SharedPtr nh) :
   // Visualize periodically just in case.
   auto refresh_rate = std::chrono::duration_cast<std::chrono::milliseconds>(
                       std::chrono::duration<double>(config_.refresh_rate));
-  timer_ = this->create_wall_timer(refresh_rate, [this]() { this->visualizeClouds(); });
+  timer_ = nh_->create_wall_timer(refresh_rate, [this]() { this->visualizeClouds(); });
 }
 
 void CloudVisualizer::visualizeClouds() {
