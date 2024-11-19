@@ -2,13 +2,6 @@
 
 namespace dynablox {
 
-void Tracking::Config::checkParams() const {}
-
-void Tracking::Config::setupParamsAndPrinting() {
-  setupParam("min_track_duration", &min_track_duration, "frames");
-  setupParam("max_tracking_distance", &max_tracking_distance, "m");
-}
-
 Tracking::Tracking(const Config& config) : config_(config.checkValid()) {}
 
 void Tracking::track(const Cloud& cloud, Clusters& clusters,

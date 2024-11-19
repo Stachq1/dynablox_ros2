@@ -7,7 +7,6 @@
 #include <voxblox/core/common.h>
 #include <voxblox/core/layer.h>
 
-#include "dynablox/3rd_party/config_utilities.hpp"
 #include "dynablox/common/neighborhood_search.h"
 #include "dynablox/common/types.h"
 
@@ -16,7 +15,7 @@ namespace dynablox {
 class EverFreeIntegrator {
  public:
   // Config.
-  struct Config : public config_utilities::Config<Config> {
+  struct Config {
     // Neighborhood connectivity when removing ever free.
     int neighbor_connectivity = 18;
 
@@ -36,12 +35,6 @@ class EverFreeIntegrator {
 
     // Number of threads to use.
     int num_threads = std::thread::hardware_concurrency();
-
-    Config() { setConfigName("EverFreeIntegrator"); }
-
-   protected:
-    void setupParamsAndPrinting() override;
-    void checkParams() const override;
   };
 
   EverFreeIntegrator(const Config& config,

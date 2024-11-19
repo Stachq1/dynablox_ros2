@@ -8,28 +8,6 @@
 
 namespace dynablox {
 
-void Clustering::Config::checkParams() const {
-  checkParamCond(max_cluster_size > min_cluster_size,
-                 "'max_cluster_size' must be larger than 'min_cluster_size'.");
-  checkParamCond(neighbor_connectivity == 6 || neighbor_connectivity == 18 ||
-                     neighbor_connectivity == 26,
-                 "'neighbor_connectivity' must be 6, 18, or 26.");
-  checkParamGT(max_extent, 0.f, "max_extent");
-  checkParamCond(max_extent > min_extent,
-                 "'max_extent' must be larger than 'min_extent'.");
-}
-
-void Clustering::Config::setupParamsAndPrinting() {
-  setupParam("min_cluster_size", &min_cluster_size);
-  setupParam("max_cluster_size", &max_cluster_size);
-  setupParam("min_extent", &min_extent, "m");
-  setupParam("max_extent", &max_extent, "m");
-  setupParam("grow_clusters_twice", &grow_clusters_twice);
-  setupParam("min_cluster_separation", &min_cluster_separation, "m");
-  setupParam("check_cluster_separation_exact", &check_cluster_separation_exact);
-  setupParam("neighbor_connectivity", &neighbor_connectivity);
-}
-
 Clustering::Clustering(const Config& config, TsdfLayer::Ptr tsdf_layer)
     : config_(config.checkValid()),
       tsdf_layer_(std::move(tsdf_layer)),

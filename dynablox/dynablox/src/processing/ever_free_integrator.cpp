@@ -13,23 +13,6 @@ namespace dynablox {
 
 using Timer = voxblox::timing::Timer;
 
-void EverFreeIntegrator::Config::checkParams() const {
-  checkParamCond(neighbor_connectivity == 6 || neighbor_connectivity == 18 ||
-                     neighbor_connectivity == 26,
-                 "'neighbor_connectivity' must be 6, 18, or 26.");
-  checkParamGE(num_threads, 1, "num_threads");
-  checkParamGE(temporal_buffer, 0, "temporal_buffer");
-}
-
-void EverFreeIntegrator::Config::setupParamsAndPrinting() {
-  setupParam("counter_to_reset", &counter_to_reset, "frames");
-  setupParam("temporal_buffer", &temporal_buffer, "frames");
-  setupParam("burn_in_period", &burn_in_period);
-  setupParam("tsdf_occupancy_threshold", &tsdf_occupancy_threshold, "m");
-  setupParam("neighbor_connectivity", &neighbor_connectivity);
-  setupParam("num_threads", &num_threads);
-}
-
 EverFreeIntegrator::EverFreeIntegrator(const EverFreeIntegrator::Config& config,
                                        TsdfLayer::Ptr tsdf_layer)
     : config_(config.checkValid()),

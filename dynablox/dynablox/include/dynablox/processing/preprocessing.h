@@ -8,7 +8,6 @@
 #include <pcl/point_cloud.h>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 
-#include "dynablox/3rd_party/config_utilities.hpp"
 #include "dynablox/common/types.h"
 
 namespace dynablox {
@@ -16,18 +15,12 @@ namespace dynablox {
 class Preprocessing {
  public:
   // Config.
-  struct Config : public config_utilities::Config<Config> {
+  struct Config {
     // Maximum ray length to integrate [m].
     float max_range = 20.f;
 
     // Minimum range for all points [m].
     float min_range = 0.5;
-
-    Config() { setConfigName("Preprocessing"); }
-
-   protected:
-    void setupParamsAndPrinting() override;
-    void checkParams() const override;
   };
 
   explicit Preprocessing(const Config& config);

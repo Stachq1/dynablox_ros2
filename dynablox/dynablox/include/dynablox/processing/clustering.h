@@ -15,7 +15,6 @@
 #include <voxblox/utils/approx_hash_array.h>
 #include <voxblox/utils/timing.h>
 
-#include "dynablox/3rd_party/config_utilities.hpp"
 #include "dynablox/common/neighborhood_search.h"
 #include "dynablox/common/types.h"
 
@@ -24,7 +23,7 @@ namespace dynablox {
 class Clustering {
  public:
   // Config.
-  struct Config : public config_utilities::Config<Config> {
+  struct Config {
     // Filter out clusters with too few or many points.
     int min_cluster_size = 25;
     int max_cluster_size = 2500;
@@ -44,12 +43,6 @@ class Clustering {
 
     // If true check separation per point, if false per voxel.
     bool check_cluster_separation_exact = false;
-
-    Config() { setConfigName("Clustering"); }
-
-   protected:
-    void setupParamsAndPrinting() override;
-    void checkParams() const override;
   };
 
   // Constructor.

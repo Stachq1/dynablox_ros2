@@ -1,7 +1,6 @@
 #ifndef DYNABLOX_PROCESSING_TRACKING_H_
 #define DYNABLOX_PROCESSING_TRACKING_H_
 
-#include "dynablox/3rd_party/config_utilities.hpp"
 #include "dynablox/common/types.h"
 
 namespace dynablox {
@@ -9,18 +8,12 @@ namespace dynablox {
 class Tracking {
  public:
   // Config.
-  struct Config : public config_utilities::Config<Config> {
+  struct Config {
     // Numbers of frames a cluster needs to be tracked to be considered dynamic.
     int min_track_duration = 0;
 
     // Maximum distance a cluster may have moved to be considered a track [m].
     float max_tracking_distance = 1.f;
-
-    Config() { setConfigName("Tracking"); }
-
-   protected:
-    void setupParamsAndPrinting() override;
-    void checkParams() const override;
   };
 
   // Constructor.
