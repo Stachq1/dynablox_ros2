@@ -16,7 +16,7 @@ namespace dynablox {
 class Evaluator {
  public:
   // Config.
-  struct Config : public config_utilities::Config<Config> {
+  struct Config {
     // Where to put the evaluation. Will create a timestamped folder if
     // output_directory already exists, otherwise create it.
     std::string output_directory;
@@ -38,16 +38,10 @@ class Evaluator {
 
     // Config for the ground truth handler.
     GroundTruthHandler::Config ground_truth_config;
-
-    Config() { setConfigName("Evaluator"); }
-
-   protected:
-    void setupParamsAndPrinting() override;
-    void checkParams() const override;
   };
 
   // Constructor.
-  Evaluator(const Config& config_utilities);
+  Evaluator();
 
   // Evaluation helper methods.
   /**

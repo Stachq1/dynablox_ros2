@@ -20,28 +20,7 @@ const std::string Evaluator::clouds_file_name_ = "clouds.csv";
 const std::string Evaluator::scores_file_name_ = "scores.csv";
 const std::string Evaluator::timings_file_name_ = "timings.txt";
 
-void Evaluator::Config::checkParams() const {
-  checkParamCond(!output_directory.empty(), "'output_directory' must be set.");
-  checkParamGE(min_range, 0.f, "min_range");
-  checkParamCond(max_range > min_range,
-                 "'max_range' must be larger than 'min_range'.");
-  checkParamConfig(ground_truth_config);
-}
-
-void Evaluator::Config::setupParamsAndPrinting() {
-  setupParam("output_directory", &output_directory);
-  setupParam("min_range", &min_range);
-  setupParam("max_range", &max_range);
-  setupParam("evaluate_point_level", &evaluate_point_level);
-  setupParam("evaluate_cluster_level", &evaluate_cluster_level);
-  setupParam("evaluate_object_level", &evaluate_object_level);
-  setupParam("save_clouds", &save_clouds);
-  setupParam("ground_truth", &ground_truth_config, "ground_truth");
-}
-
-Evaluator::Evaluator(const Config& config)
-    : config_(config.checkValid()),
-      ground_truth_handler(config_.ground_truth_config) {
+Evaluator::Evaluator() {
   setupFiles();
 }
 

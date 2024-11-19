@@ -11,17 +11,7 @@
 
 namespace dynablox {
 
-void GroundTruthHandler::Config::checkParams() const {
-  checkParamCond(std::filesystem::exists(file_path),
-                 "Target file '" + file_path + "' does not exist.");
-}
-
-void GroundTruthHandler::Config::setupParamsAndPrinting() {
-  setupParam("file_path", &file_path);
-}
-
-GroundTruthHandler::GroundTruthHandler(const Config& config)
-    : config_(config.checkValid()) {
+GroundTruthHandler::GroundTruthHandler() {
   // Setup the lookup table.
   createLookupFromCSV();
 }

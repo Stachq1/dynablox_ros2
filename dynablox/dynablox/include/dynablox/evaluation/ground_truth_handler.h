@@ -1,7 +1,6 @@
 #ifndef DYNABLOX_EVALUATION_GROUND_TRUTH_HANDLER_H_
 #define DYNABLOX_EVALUATION_GROUND_TRUTH_HANDLER_H_
 
-#include "dynablox/3rd_party/config_utilities.hpp"
 #include "dynablox/common/types.h"
 
 namespace dynablox {
@@ -11,20 +10,14 @@ namespace dynablox {
 class GroundTruthHandler {
  public:
   // Config.
-  struct Config : public config_utilities::Config<Config> {
+  struct Config {
     // Where to read the ground truth data.
     std::string file_path;
-
-    Config() { setConfigName("GroundTruthHandler"); }
-
-   protected:
-    void setupParamsAndPrinting() override;
-    void checkParams() const override;
   };
 
   using TimestampVectorMap = std::map<std::uint64_t, std::vector<int>>;
 
-  explicit GroundTruthHandler(const Config& config);
+  explicit GroundTruthHandler();
 
   /**
    * @brief Read the DOALS indices.csv file into a map.
