@@ -85,11 +85,6 @@ class Evaluator {
                  const Clusters& clusters);
 
   /**
-   * @brief Store all parameters used by the motion detector.
-   */
-  void saveConfig();
-
-  /**
    * @brief Mark only relevant points for evaluation.
    *
    * @param cloud_info Cloud info to be marked.

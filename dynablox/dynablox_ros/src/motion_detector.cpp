@@ -72,7 +72,7 @@ void MotionDetector::setupMembers() {
   }
 
   // Visualization.
-  visualizer_ = std::make_shared<MotionVisualizer>(nh_private_, tsdf_layer_, "visualization");
+  visualizer_ = std::make_shared<MotionVisualizer>(nh_private_, tsdf_layer_);
 }
 
 void MotionDetector::setupRos() {

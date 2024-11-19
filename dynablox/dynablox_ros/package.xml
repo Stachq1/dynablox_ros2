@@ -2,7 +2,7 @@
 <package format="3">
   <name>dynablox_ros</name>
   <version>0.0.0</version>
-  <description>Detecting diverse dynamic objects in compelx environments</description>
+  <description>Detecting diverse dynamic objects in complex environments</description>
 
   <author email="schmluk@ethz.ch">Lukas Schmid</author>
   <author email="asulser@ethz.ch">Aurelio Sulser</author>
@@ -17,20 +17,18 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <!-- Dependencies -->
-  <depend>roscpp</depend>
-  <depend>rospy</depend>
-  <depend>std_msgs</depend>
-  <depend>sensor_msgs</depend>
-  <depend>geometry_msgs</depend>
-  <depend>visualization_msgs</depend>
-  <depend>tf2_geometry_msgs</depend>
-  <depend>voxblox_msgs</depend>
-  <depend>pcl_conversions</depend>
-  <depend>tf2</depend>
-  <depend>tf2_ros</depend>
-  <depend>voxblox</depend>
-  <depend>voxblox_ros</depend>
   <depend>dynablox</depend>
+  <depend>geometry_msgs</depend>
+  <depend>pcl_conversions</depend>
+  <depend>rclcpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>tf2_geometry_msgs</depend>
+  <depend>tf2_ros</depend>
+  <depend>visualization_msgs</depend>
+  <depend>voxblox</depend>
+  <depend>voxblox_msgs</depend>
+  <depend>voxblox_ros</depend>
 
   <export>
     <build_type>ament_cmake</build_type>

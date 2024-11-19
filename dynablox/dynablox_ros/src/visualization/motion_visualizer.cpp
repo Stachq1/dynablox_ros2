@@ -408,7 +408,7 @@ void MotionVisualizer::visualizeGroundTruth(const Cloud& cloud,
   }
 }
 
-MarkerTuple MotionVisualizer::visualizeGroundTruthAtLevel(
+MotionVisualizer::MarkerTuple MotionVisualizer::visualizeGroundTruthAtLevel(
     const Cloud& cloud, const CloudInfo& cloud_info,
     const std::function<bool(const PointInfo&)>& check_level,
     const std::string& ns) const {

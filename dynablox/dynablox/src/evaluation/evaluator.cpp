@@ -65,7 +65,6 @@ void Evaluator::evaluateFrame(const Cloud& cloud, CloudInfo& cloud_info,
                               const Clusters& clusters) {
   // Update the timings every frame.
   writeTimingsToFile();
-  saveConfig();
 
   // If ground truth available, label the cloud and compute the metrics.
   if (ground_truth_handler.labelCloudInfoIfAvailable(cloud_info)) {
@@ -171,19 +170,6 @@ void Evaluator::evaluateCloudAtLevel(const CloudInfo& cloud_info,
   output_file << "," << computeIntersectionOverUnion(tp, fp, fn) << ","
               << computePrecision(tp, fp) << "," << computeRecall(tp, fn) << ","
               << tp << "," << tn << "," << fp << "," << fn;
-}
-
-void Evaluator::saveConfig() {
-  if (!config_.save_config || config_saved_) {
-    return;
-  }
-
-  // Write config to file.
-  std::ofstream writefile;
-  writefile.open(output_directory_ + "/" + config_file_name_, std::ios::trunc);
-  writefile << config_utilities::Global::printAllConfigs();
-  writefile.close();
-  config_saved_ = true;
 }
 
 float Evaluator::computePrecision(const uint tp, const uint fp) {

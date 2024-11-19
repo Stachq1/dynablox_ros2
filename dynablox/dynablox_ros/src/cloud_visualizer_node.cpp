@@ -14,9 +14,7 @@ int main(int argc, char** argv) {
   auto nh = std::make_shared<rclcpp::Node>("cloud_visualizer");
   auto cloud_visualizer = std::make_shared<dynablox::CloudVisualizer>(nh);
 
-  rclcpp::spin(cloud_visualizer);
+  rclcpp::spin(nh);
   rclcpp::shutdown();
-
-  rclcpp::spin();
   return 0;
 }

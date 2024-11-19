@@ -9,8 +9,9 @@
 namespace dynablox {
 
 Clustering::Clustering(TsdfLayer::Ptr tsdf_layer)
-    : tsdf_layer_(std::move(tsdf_layer)),
-      neighborhood_search_(config.neighbor_connectivity) {}
+    : config_(),
+      tsdf_layer_(std::move(tsdf_layer)),
+      neighborhood_search_(config_.neighbor_connectivity) {}
 
 Clusters Clustering::performClustering(
     const BlockToPointMap& point_map,
