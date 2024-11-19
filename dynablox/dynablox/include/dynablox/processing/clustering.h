@@ -46,7 +46,7 @@ class Clustering {
   };
 
   // Constructor.
-  Clustering(const Config& config, TsdfLayer::Ptr tsdf_layer);
+  Clustering(TsdfLayer::Ptr tsdf_layer);
 
   // Types.
   using ClusterIndices = std::vector<voxblox::VoxelKey>;

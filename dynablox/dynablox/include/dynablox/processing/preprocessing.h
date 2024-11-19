@@ -23,8 +23,6 @@ class Preprocessing {
     float min_range = 0.5;
   };
 
-  explicit Preprocessing(const Config& config);
-
   /**
    * @brief Transform the pointcloud to world frame and mark points valid for
    * integration and evaluation.

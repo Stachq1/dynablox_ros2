@@ -16,9 +16,6 @@ class Tracking {
     float max_tracking_distance = 1.f;
   };
 
-  // Constructor.
-  Tracking(const Config& config);
-
   /**
    * @brief Track all clusters w.r.t. the previous clsuters. Denote the object
    * level points dynamic in the cloud_info.

@@ -37,8 +37,7 @@ class EverFreeIntegrator {
     int num_threads = std::thread::hardware_concurrency();
   };
 
-  EverFreeIntegrator(const Config& config,
-                     std::shared_ptr<TsdfLayer> tsdf_layer);
+  EverFreeIntegrator(std::shared_ptr<TsdfLayer> tsdf_layer);
 
   /**
    * @brief Update the ever-free state of all changed TSDF-voxels by checking

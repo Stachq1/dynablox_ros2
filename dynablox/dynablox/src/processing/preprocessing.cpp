@@ -7,9 +7,6 @@
 
 namespace dynablox {
 
-Preprocessing::Preprocessing(const Config& config)
-    : config_(config.checkValid()) {}
-
 bool Preprocessing::processPointcloud(const sensor_msgs::msg::PointCloud2::SharedPtr& msg,
                                       const Eigen::Matrix4f& T_M_S,
                                       Cloud& cloud,

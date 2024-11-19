@@ -2,8 +2,6 @@
 
 namespace dynablox {
 
-Tracking::Tracking(const Config& config) : config_(config.checkValid()) {}
-
 void Tracking::track(const Cloud& cloud, Clusters& clusters,
                      CloudInfo& cloud_info) {
   // Associate current to previous cluster ids.
