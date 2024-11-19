@@ -58,8 +58,7 @@ add_executable(cloud_visualizer_node src/cloud_visualizer_node.cpp)
 target_link_libraries(cloud_visualizer_node ${PROJECT_NAME} glog::glog)
 
 # Install targets
-install(TARGETS
-  ${PROJECT_NAME}
+install(TARGETS ${PROJECT_NAME}
   motion_detector_node
   cloud_visualizer_node
   ARCHIVE DESTINATION lib

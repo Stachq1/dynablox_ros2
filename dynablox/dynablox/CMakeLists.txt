@@ -51,7 +51,7 @@ install(TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION lib
 )
 
-# Install headers if applicable (you may need to adjust the path)
+# Install headers if applicable
 install(DIRECTORY include/
   DESTINATION include
 )
