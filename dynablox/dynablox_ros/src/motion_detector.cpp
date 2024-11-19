@@ -120,7 +120,8 @@ void MotionDetector::pointcloudCallback(
   CloudInfo cloud_info;
   Cloud cloud;
 
-  preprocessing_->processPointcloud(msg, T_M_S, cloud, cloud_info, rclcpp::Time(msg->header.stamp).nanoseconds()); // What do I do here?
+  Eigen::Matrix4f T_M_S_4f = transformStampedToMatrix(T_M_S);
+  preprocessing_->processPointcloud(msg, T_M_S_4f, cloud, cloud_info, rclcpp::Time(msg->header.stamp).nanoseconds()); // What do I do here?
   preprocessing_timer.Stop();
 
   // Build a mapping of all blocks to voxels to points for the scan.
