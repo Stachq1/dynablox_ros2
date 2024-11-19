@@ -53,33 +53,22 @@ void MotionDetector::setupMembers() {
   tsdf_layer_.reset(tsdf_server_->getTsdfMapPtr()->getTsdfLayerPtr());
 
   // Preprocessing.
-  preprocessing_ = std::make_shared<Preprocessing>(
-      config_utilities::getConfigFromNode<Preprocessing::Config>(
-          nh_private_, "preprocessing"));
+  preprocessing_ = std::make_shared<Preprocessing>();
 
   // Clustering.
-  clustering_ = std::make_shared<Clustering>(
-      config_utilities::getConfigFromNode<Clustering::Config>(
-          nh_private_, "clustering"),
-      tsdf_layer_);
+  clustering_ = std::make_shared<Clustering>(tsdf_layer_);
 
   // Tracking.
-  tracking_ = std::make_shared<Tracking>(
-      config_utilities::getConfigFromNode<Tracking::Config>(
-          nh_private_, "tracking"));
+  tracking_ = std::make_shared<Tracking>();
 
   // Ever-Free Integrator.
   nh_private_->declare_parameter("ever_free_integrator.num_threads", config_.num_threads);
-  ever_free_integrator_ = std::make_shared<EverFreeIntegrator>(
-      config_utilities::getConfigFromNode<EverFreeIntegrator::Config>(
-          nh_private_, "ever_free_integrator"), tsdf_layer_);
+  ever_free_integrator_ = std::make_shared<EverFreeIntegrator>(tsdf_layer_);
 
   // Evaluation.
   if (config_.evaluate) {
     // Initialize evaluator if evaluation is requested.
-    evaluator_ = std::make_shared<Evaluator>(
-        config_utilities::getConfigFromNode<Evaluator::Config>(
-            nh_private_, "evaluation"));
+    evaluator_ = std::make_shared<Evaluator>();
   }
 
   // Visualization.
