@@ -77,6 +77,7 @@ install(DIRECTORY include/
 # EXPORT #
 #############
 
+ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
 ament_export_dependencies(minkindr rclcpp sensor_msgs std_msgs std_srvs tf2 tf2_ros pcl_conversions visualization_msgs voxblox voxblox_msgs)
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})

@@ -9,7 +9,6 @@ find_package(ament_cmake REQUIRED)
 find_package(PCL REQUIRED)
 find_package(pcl_conversions REQUIRED)
 find_package(sensor_msgs REQUIRED)
-find_package(tf2 REQUIRED)
 find_package(voxblox REQUIRED)
 
 # Add library
@@ -28,7 +27,6 @@ include_directories(${PROJECT_NAME} PUBLIC
   include
   ${PCL_INCLUDE_DIRS}
   ${pcl_conversions_INCLUDE_DIRS}
-  ${tf2_INCLUDE_DIRS}
   ${voxblox_INCLUDE_DIRS}
 )
 
@@ -40,7 +38,6 @@ ament_target_dependencies(${PROJECT_NAME}
   PCL
   pcl_conversions
   sensor_msgs
-  tf2
   voxblox
 )
 
@@ -57,7 +54,7 @@ install(DIRECTORY include/
 )
 
 # Export the package
-ament_export_dependencies(PCL pcl_conversions sensor_msgs tf2 voxblox)
+ament_export_dependencies(PCL pcl_conversions sensor_msgs voxblox)
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
 

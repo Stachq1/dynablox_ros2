@@ -27,6 +27,7 @@ find_package(voxblox_ros REQUIRED)
 
 # Include directories
 include_directories(include)
+include_directories(${voxblox_ros_INCLUDE_DIRS})
 
 # Add library
 add_library(${PROJECT_NAME}
