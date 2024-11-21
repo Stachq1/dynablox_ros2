@@ -68,6 +68,11 @@ install(TARGETS ${PROJECT_NAME}
   RUNTIME DESTINATION bin
 )
 
+# Install the executable
+install(TARGETS tsdf_server
+  RUNTIME DESTINATION bin
+)
+
 # Install headers
 install(DIRECTORY include/
   DESTINATION include/
