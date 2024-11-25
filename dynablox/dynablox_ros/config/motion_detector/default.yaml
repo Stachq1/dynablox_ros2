@@ -8,8 +8,8 @@ shutdown_after: 10  # number evaluations.
   
 # Preprocessing.
 preprocessing:
-  min_range: &min_range 0.5  # m
-  max_range: &max_range 20  # m
+  min_range: 0.5  # m
+  max_range: 20  # m
 
 # Ever-Free Integration.
 ever_free_integrator:
@@ -36,8 +36,8 @@ tracking:
   
 # Evaluation.
 evaluation:
-  min_range: *min_range  # m
-  max_range: *max_range  # m
+  min_range: 0.5  # m
+  max_range: 20  # m
   evaluate_point_level: true
   evaluate_cluster_level: true
   evaluate_object_level: true
@@ -71,7 +71,7 @@ voxblox:
   sensor_horizontal_resolution: 2048
   sensor_vertical_resolution: 64
   sensor_vertical_field_of_view_degrees: 33.22222
-  min_ray_length_m: *min_range
-  max_ray_length_m: *max_range
+  min_ray_length_m: 0.5
+  max_ray_length_m: 20
   use_const_weight: true
   verbose: false
