@@ -11,7 +11,7 @@ int main(int argc, char** argv) {
   google::InstallFailureSignalHandler();
   google::ParseCommandLineFlags(&argc, &argv, false);
 
-  auto nh = std::make_shared<rclcpp::Node>("cloud_visualizer");
+  auto nh = std::make_shared<rclcpp::Node>("cloud_visualizer_node");
   auto cloud_visualizer = std::make_shared<dynablox::CloudVisualizer>(nh);
 
   rclcpp::spin(nh);

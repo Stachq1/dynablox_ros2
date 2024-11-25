@@ -9,7 +9,7 @@ int main(int argc, char** argv) {
   google::ParseCommandLineFlags(&argc, &argv, false);
   google::InstallFailureSignalHandler();
 
-  auto nh = std::make_shared<rclcpp::Node>("motion_detector");
+  auto nh = std::make_shared<rclcpp::Node>("motion_detector_node");
   auto nh_private = std::make_shared<rclcpp::Node>("motion_detector_private");
   auto tsdf_server = std::make_shared<dynablox::MotionDetector>(nh, nh_private);
 

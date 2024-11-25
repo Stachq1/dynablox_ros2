@@ -17,8 +17,8 @@ def generate_launch_description():
   # Set up the cloud visualizer node
   cloud_visualizer_node = Node(
     package='dynablox_ros',
-    executable='cloud_visualizer',
-    name='cloud_visualizer',
+    executable='cloud_visualizer_node',
+    name='cloud_visualizer_node',
     output='screen',
     arguments=['--alsologtostderr'],
     parameters=[{

@@ -3,7 +3,7 @@ from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch_ros.actions import Node
 from launch.substitutions import LaunchConfiguration
 from launch.conditions import IfCondition
-from launch import actions
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
 import os
 
@@ -11,7 +11,7 @@ def generate_launch_description():
   # Declare the arguments
   bag_file_arg = DeclareLaunchArgument(
     'bag_file',
-    default_value='/home/spiasecki/Desktop/rosbags/indoor.bag',
+    default_value='/root/rosbags/indoor.bag',
     description='Full path to the bag file to play'
   )
 
@@ -29,13 +29,13 @@ def generate_launch_description():
 
   eval_output_path_arg = DeclareLaunchArgument(
     'eval_output_path',
-    default_value='/home/{}/dynablox_output'.format(os.environ['USER']),
+    default_value='/root/dynablox_output',
     description='Where to save evaluation data'
   )
 
   ground_truth_file_arg = DeclareLaunchArgument(
     'ground_truth_file',
-    default_value='/home/{}/data/DOALS/hauptgebaeude/sequence_1/indices.csv'.format(os.environ['USER']),
+    default_value='/root/data/DOALS/hauptgebaeude/sequence_1/indices.csv',
     description='GT data file. Currently supports DOALS'
   )
 
@@ -53,17 +53,17 @@ def generate_launch_description():
 
   # Include play_dynablox_data.launch
   play_dynablox_data_launch = IncludeLaunchDescription(
-    actions.PushSubscription(
-      get_package_share_directory('dynablox_ros'),
-      'launch/play_dynablox_data.launch',
-      pass_all_args=True
-    )
+    PythonLaunchDescriptionSource(
+      os.path.join(get_package_share_directory('dynablox_ros'), 'launch', 'play_dynablox_data.py')
+    ),
+    launch_arguments={'bag_file': LaunchConfiguration('bag_file'),
+                      'player_rate': LaunchConfiguration('player_rate')}.items()
   )
 
   motion_detector_node = Node(
     package='dynablox_ros',
-    executable='motion_detector',
-    name='motion_detector',
+    executable='motion_detector_node',
+    name='motion_detector_node',
     output='screen',
     arguments=['--alsologtostderr'],
     parameters=[
@@ -71,23 +71,17 @@ def generate_launch_description():
         'evaluation/ground_truth/file_path': LaunchConfiguration('ground_truth_file'),
         'evaluation/output_directory': LaunchConfiguration('eval_output_path'),
         'evaluate': LaunchConfiguration('evaluate'),
-        'config_file': os.path.join(
-            get_package_share_directory('dynablox_ros'),
-            'config',
-            LaunchConfiguration('config_file')
-        )
+        'config_file': LaunchConfiguration('config_file')
       }
-    ],
-    remappings=[]
+    ]
   )
 
   # Include visualizer.launch if visualize is true
   visualizer_launch = IncludeLaunchDescription(
-    actions.PushSubscription(
-      get_package_share_directory('dynablox_ros'),
-      'launch/visualizer.launch',
-      condition=IfCondition(LaunchConfiguration('visualize'))
-    )
+    PythonLaunchDescriptionSource(
+      os.path.join(get_package_share_directory('dynablox_ros'), 'launch', 'visualizer.py')
+    ),
+    condition=IfCondition(LaunchConfiguration('visualize'))
   )
 
   return LaunchDescription([
