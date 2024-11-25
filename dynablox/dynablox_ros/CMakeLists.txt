@@ -62,12 +62,12 @@ install(TARGETS ${PROJECT_NAME}
   cloud_visualizer_node
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 # Install directories
-install(DIRECTORY launch
-  DESTINATION share/${PROJECT_NAME}
+install(DIRECTORY launch config
+  DESTINATION share/${PROJECT_NAME}/
 )
 
 # Export package dependencies
