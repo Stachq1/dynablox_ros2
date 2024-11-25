@@ -25,7 +25,6 @@ def generate_launch_description():
       'ros2', 'bag', 'play',
       LaunchConfiguration('bag_file'),
       '--rate', LaunchConfiguration('player_rate'),
-      '--quiet',
       '-d', '1'
     ],
     output='screen',

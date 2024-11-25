@@ -11,7 +11,7 @@ def generate_launch_description():
   # Declare the arguments
   bag_file_arg = DeclareLaunchArgument(
     'bag_file',
-    default_value='/root/rosbags/indoor.bag',
+    default_value='/root/rosbags/indoor/indoor.db3',
     description='Full path to the bag file to play'
   )
 
