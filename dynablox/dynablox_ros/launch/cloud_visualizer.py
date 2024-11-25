@@ -40,8 +40,8 @@ def generate_launch_description():
 
   # Set up the RViz node
   rviz_node = Node(
-    package='rviz2',  # The package name for RViz in ROS 2
-    executable='rviz2',  # The executable name for RViz in ROS 2
+    package='rviz2',
+    executable='rviz2',
     name='rviz',
     arguments=['-d', rviz_config_path],
     output='screen'

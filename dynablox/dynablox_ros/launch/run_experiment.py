@@ -76,12 +76,10 @@ def generate_launch_description():
     ]
   )
 
-  # Include visualizer.launch if visualize is true
-  visualizer_launch = IncludeLaunchDescription(
-    PythonLaunchDescriptionSource(
-      os.path.join(get_package_share_directory('dynablox_ros'), 'launch', 'visualizer.py')
-    ),
-    condition=IfCondition(LaunchConfiguration('visualize'))
+  rviz_node = Node(
+    package='rviz2',
+    executable='rviz2',
+    name='rviz'
   )
 
   return LaunchDescription([
@@ -94,5 +92,5 @@ def generate_launch_description():
     visualize_arg,
     play_dynablox_data_launch,
     motion_detector_node,
-    visualizer_launch
+    rviz_node
   ])
