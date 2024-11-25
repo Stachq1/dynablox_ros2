@@ -41,6 +41,7 @@ TsdfServer::TsdfServer(const rclcpp::Node::SharedPtr& nh,
       pointcloud_queue_size_(1),
       num_subscribers_tsdf_map_(0),
       transformer_(nh, nh_private) {
+  declareRosParams(nh_private);
   getServerConfigFromRosParam(nh_private);
 
   surface_pointcloud_pub_ = nh_private_->create_publisher<sensor_msgs::msg::PointCloud2>(
@@ -55,8 +56,6 @@ TsdfServer::TsdfServer(const rclcpp::Node::SharedPtr& nh,
   tsdf_slice_pub_ = nh_private_->create_publisher<sensor_msgs::msg::PointCloud2>(
       "tsdf_slice", rclcpp::QoS(1).transient_local());
 
-  nh_private_->declare_parameter<int>("pointcloud_queue_size", pointcloud_queue_size_);
-  nh_private_->get_parameter("pointcloud_queue_size", pointcloud_queue_size_);
   pointcloud_sub_ = nh_->create_subscription<sensor_msgs::msg::PointCloud2>(
       "pointcloud", rclcpp::QoS(pointcloud_queue_size_),
       [this](const sensor_msgs::msg::PointCloud2::SharedPtr msg) {
@@ -153,63 +152,54 @@ TsdfServer::TsdfServer(const rclcpp::Node::SharedPtr& nh,
   }
 }
 
+void TsdfServer::declareRosParams(const rclcpp::Node::SharedPtr& nh_private) {
+  nh_private->declare_parameter("min_time_between_msgs_sec", 0.0);
+  nh_private->declare_parameter("max_block_distance_from_body", std::numeric_limits<FloatingPoint>::max());
+  nh_private->declare_parameter("slice_level", 0.5);
+  nh_private->declare_parameter("world_frame", "world");
+  nh_private->declare_parameter("publish_pointclouds_on_update", false);
+  nh_private->declare_parameter("publish_slices", false);
+  nh_private->declare_parameter("publish_pointclouds", false);
+  nh_private->declare_parameter("use_freespace_pointcloud", false);
+  nh_private->declare_parameter("pointcloud_queue_size", 1);
+  nh_private->declare_parameter("enable_icp", false);
+  nh_private->declare_parameter("accumulate_icp_corrections", true);
+  nh_private->declare_parameter("verbose", true);
+  nh_private->declare_parameter("mesh_filename", "");
+  nh_private->declare_parameter("color_mode", "rainbow");
+  nh_private->declare_parameter("intensity_colormap", "rainbow");
+  nh_private->declare_parameter("intensity_max_value", kDefaultMaxIntensity);
+}
+
 void TsdfServer::getServerConfigFromRosParam(const rclcpp::Node::SharedPtr& nh_private) {
   // Before subscribing, determine minimum time between messages.
   // 0 by default.
   double min_time_between_msgs_sec = 0.0;
-  nh_private->declare_parameter("min_time_between_msgs_sec", 0.0);
   nh_private->get_parameter("min_time_between_msgs_sec", min_time_between_msgs_sec);
   std::chrono::duration<double> min_time_between_msgs_chrono(min_time_between_msgs_sec);
   min_time_between_msgs_ = rclcpp::Duration(min_time_between_msgs_chrono);
 
-  nh_private->declare_parameter("max_block_distance_from_body", std::numeric_limits<FloatingPoint>::max());
   nh_private->get_parameter("max_block_distance_from_body", max_block_distance_from_body_);
-
-  nh_private->declare_parameter("slice_level", 0.5);
   nh_private->get_parameter("slice_level", slice_level_);
-
-  nh_private->declare_parameter("world_frame", "world");
   nh_private->get_parameter("world_frame", world_frame_);
-
-  nh_private->declare_parameter("publish_pointclouds_on_update", false);
   nh_private->get_parameter("publish_pointclouds_on_update", publish_pointclouds_on_update_);
-
-  nh_private->declare_parameter("publish_slices", false);
   nh_private->get_parameter("publish_slices", publish_slices_);
-
-  nh_private->declare_parameter("publish_pointclouds", false);
   nh_private->get_parameter("publish_pointclouds", publish_pointclouds_);
-
-  nh_private->declare_parameter("use_freespace_pointcloud", false);
   nh_private->get_parameter("use_freespace_pointcloud", use_freespace_pointcloud_);
-
-  nh_private->declare_parameter("pointcloud_queue_size", 1);
   nh_private->get_parameter("pointcloud_queue_size", pointcloud_queue_size_);
-
-  nh_private->declare_parameter("enable_icp", false);
   nh_private->get_parameter("enable_icp", enable_icp_);
-
-  nh_private->declare_parameter("accumulate_icp_corrections", true);
   nh_private->get_parameter("accumulate_icp_corrections", accumulate_icp_corrections_);
-
-  nh_private->declare_parameter("verbose", true);
   nh_private->get_parameter("verbose", verbose_);
-
-  // Mesh settings.
-  nh_private->declare_parameter("mesh_filename", "");
   nh_private->get_parameter("mesh_filename", mesh_filename_);
 
   std::string color_mode("");
-  nh_private->declare_parameter("color_mode", "rainbow");
   nh_private->get_parameter("color_mode", color_mode);
   color_mode_ = getColorModeFromString(color_mode);
 
   // Color map for intensity pointclouds.
   std::string intensity_colormap("rainbow");
   float intensity_max_value = kDefaultMaxIntensity;
-  nh_private->declare_parameter("intensity_colormap", "rainbow");
   nh_private->get_parameter("intensity_colormap", intensity_colormap);
-  nh_private->declare_parameter("intensity_max_value", kDefaultMaxIntensity);
   nh_private->get_parameter("intensity_max_value", intensity_max_value);
 
   // Default set in constructor.

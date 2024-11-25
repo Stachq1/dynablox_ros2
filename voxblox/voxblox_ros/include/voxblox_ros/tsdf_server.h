@@ -44,6 +44,8 @@ class TsdfServer {
              const MeshIntegratorConfig& mesh_config);
   virtual ~TsdfServer() {}
 
+  void declareRosParams(const rclcpp::Node::SharedPtr& nh_private);
+
   void getServerConfigFromRosParam(const rclcpp::Node::SharedPtr& nh_private);
 
   void insertPointcloud(const std::shared_ptr<sensor_msgs::msg::PointCloud2>& pointcloud);

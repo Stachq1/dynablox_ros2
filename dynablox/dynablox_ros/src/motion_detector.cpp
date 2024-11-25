@@ -40,13 +40,6 @@ void MotionDetector::setupMembers() {
 // Create a new node for voxblox parameters
   auto nh_voxblox = std::make_shared<rclcpp::Node>("voxblox", nh_private_->get_namespace());
 
-  // Declare and set parameters for the TSDF server (Voxblox settings).
-  nh_voxblox->declare_parameter("world_frame", config_.global_frame_name);
-  nh_voxblox->declare_parameter("update_mesh_every_n_sec", 0);
-  nh_voxblox->declare_parameter("voxel_carving_enabled", true);
-  nh_voxblox->declare_parameter("allow_clear", true);
-  nh_voxblox->declare_parameter("integrator_threads", config_.num_threads);
-
   // Initialize the TSDF server with parameters from the new voxblox node.
   tsdf_server_ = std::make_shared<voxblox::TsdfServer>(nh_voxblox, nh_voxblox);
   tsdf_layer_.reset(tsdf_server_->getTsdfMapPtr()->getTsdfLayerPtr());

@@ -13,11 +13,8 @@ Transformer::Transformer(const rclcpp::Node::SharedPtr& nh,
       timestamp_tolerance_ns_(1000000),
       tf_buffer_(nh_private_->get_clock()), // not sure if 100% right
       tf_listener_(tf_buffer_) {
-  nh_private_->declare_parameter<std::string>("world_frame", world_frame_);
+  // world_frame is already declared in TsdfServer
   nh_private_->get_parameter("world_frame", world_frame_);
-  nh_private_->declare_parameter<std::string>("sensor_frame", sensor_frame_);
-  nh_private_->get_parameter("sensor_frame", sensor_frame_);
-
   const double kNanoSecondsInSecond = 1.0e9;
   double timestamp_tolerance_sec = timestamp_tolerance_ns_ / kNanoSecondsInSecond;
   nh_private_->declare_parameter<double>("timestamp_tolerance_sec", timestamp_tolerance_sec);
