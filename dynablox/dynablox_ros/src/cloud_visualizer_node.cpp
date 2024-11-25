@@ -6,10 +6,9 @@
 int main(int argc, char** argv) {
   rclcpp::init(argc, argv);
 
-  // Setup logging.
+  // TODO: Read the --alsologtostderr flag from the command line
   google::InitGoogleLogging(argv[0]);
   google::InstallFailureSignalHandler();
-  google::ParseCommandLineFlags(&argc, &argv, false);
 
   auto nh = std::make_shared<rclcpp::Node>("cloud_visualizer_node");
   auto cloud_visualizer = std::make_shared<dynablox::CloudVisualizer>(nh);

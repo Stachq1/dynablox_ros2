@@ -5,8 +5,9 @@
 
 int main(int argc, char** argv) {
   rclcpp::init(argc, argv);
+
+  // TODO: Read the --alsologtostderr flag from the command line
   google::InitGoogleLogging(argv[0]);
-  google::ParseCommandLineFlags(&argc, &argv, false);
   google::InstallFailureSignalHandler();
 
   auto nh = std::make_shared<rclcpp::Node>("motion_detector_node");
