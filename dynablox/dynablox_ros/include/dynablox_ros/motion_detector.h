@@ -16,7 +16,6 @@
 #include <voxblox/core/common.h>
 #include <voxblox_ros/tsdf_server.h>
 
-#include "dynablox/3rd_party/config_utilities.hpp"
 #include "dynablox/common/index_getter.h"
 #include "dynablox/common/types.h"
 #include "dynablox/evaluation/evaluator.h"
