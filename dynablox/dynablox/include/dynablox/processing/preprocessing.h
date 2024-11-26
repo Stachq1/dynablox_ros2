@@ -16,12 +16,16 @@ class Preprocessing {
  public:
   // Config.
   struct Config {
+    Config() : max_range(20.f), min_range(0.5) {}
+
     // Maximum ray length to integrate [m].
-    float max_range = 20.f;
+    float max_range;
 
     // Minimum range for all points [m].
-    float min_range = 0.5;
+    float min_range;
   };
+
+  explicit Preprocessing(const Config& config = Config()) : config_(config) {}
 
   /**
    * @brief Transform the pointcloud to world frame and mark points valid for

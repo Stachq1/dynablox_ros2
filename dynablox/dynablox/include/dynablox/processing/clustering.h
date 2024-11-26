@@ -24,29 +24,33 @@ class Clustering {
  public:
   // Config.
   struct Config {
+    Config() : min_cluster_size(25), max_cluster_size(2500), min_extent(0.25f), max_extent(2.5f),
+               neighbor_connectivity(6), grow_clusters_twice(true), min_cluster_separation(0.2),
+               check_cluster_separation_exact(false) {}
+
     // Filter out clusters with too few or many points.
-    int min_cluster_size = 25;
-    int max_cluster_size = 2500;
+    int min_cluster_size;
+    int max_cluster_size;
 
     // filter out clusters whose AABB is larger or smaller than this [m].
-    float min_extent = 0.25f;
-    float max_extent = 2.5f;
+    float min_extent;
+    float max_extent;
 
     // Connectivity used when clustering voxels. (6, 18, 26)
-    int neighbor_connectivity = 6;
+    int neighbor_connectivity;
 
     // Grow ever free detections by 1 (false) or 2 (true) voxels.
-    bool grow_clusters_twice = true;
+    bool grow_clusters_twice;
 
     // merge clusters whose points are closer than the minimum separation [m].
-    float min_cluster_separation = 0.2;
+    float min_cluster_separation;
 
     // If true check separation per point, if false per voxel.
-    bool check_cluster_separation_exact = false;
+    bool check_cluster_separation_exact;
   };
 
   // Constructor.
-  Clustering(TsdfLayer::Ptr tsdf_layer);
+  Clustering(TsdfLayer::Ptr tsdf_layer, const Config& config = Config());
 
   // Types.
   using ClusterIndices = std::vector<voxblox::VoxelKey>;

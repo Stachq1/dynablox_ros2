@@ -8,10 +8,10 @@
 
 namespace dynablox {
 
-Clustering::Clustering(TsdfLayer::Ptr tsdf_layer)
-    : config_(),
-      tsdf_layer_(std::move(tsdf_layer)),
-      neighborhood_search_(config_.neighbor_connectivity) {}
+Clustering::Clustering(TsdfLayer::Ptr tsdf_layer, const Clustering::Config& config)
+    : config_(config),
+      tsdf_layer_(tsdf_layer),
+      neighborhood_search_(config_.neighbor_connectivity) {};
 
 Clusters Clustering::performClustering(
     const BlockToPointMap& point_map,

@@ -9,12 +9,16 @@ class Tracking {
  public:
   // Config.
   struct Config {
+    Config() : min_track_duration(0), max_tracking_distance(1.f) {}
+
     // Numbers of frames a cluster needs to be tracked to be considered dynamic.
-    int min_track_duration = 0;
+    int min_track_duration;
 
     // Maximum distance a cluster may have moved to be considered a track [m].
-    float max_tracking_distance = 1.f;
+    float max_tracking_distance;
   };
+
+  explicit Tracking(const Config& config = Config()) : config_(config) {}
 
   /**
    * @brief Track all clusters w.r.t. the previous clsuters. Denote the object

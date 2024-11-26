@@ -16,28 +16,32 @@ class EverFreeIntegrator {
  public:
   // Config.
   struct Config {
+    // Default constructor with default values if loading from ROS config goes wrong
+    Config() : neighbor_connectivity(18), counter_to_reset(50), temporal_buffer(2),burn_in_period(5),
+               tsdf_occupancy_threshold(0.3), num_threads(std::thread::hardware_concurrency()) {}
+
     // Neighborhood connectivity when removing ever free.
-    int neighbor_connectivity = 18;
+    int neighbor_connectivity;
 
     // After this many occupied observations, an ever-free voxel will be labeled
     // as occupied (thus never-free).
-    int counter_to_reset = 50;
+    int counter_to_reset;
 
     // Number of frames a voxel can be free in between occupancy without losing
     // occupancy status to compensate for point sparsity.
-    int temporal_buffer = 2;
+    int temporal_buffer;
 
     // Number of consecutive frames a voxel must be free to become ever-free.
-    int burn_in_period = 5;
+    int burn_in_period;
 
     // SDF distance below which a voxel is considered occupied [m].
-    float tsdf_occupancy_threshold = 0.3;
+    float tsdf_occupancy_threshold;
 
     // Number of threads to use.
-    int num_threads = std::thread::hardware_concurrency();
+    int num_threads;
   };
 
-  EverFreeIntegrator(std::shared_ptr<TsdfLayer> tsdf_layer);
+  EverFreeIntegrator(std::shared_ptr<TsdfLayer> tsdf_layer, const Config& config = Config());
 
   /**
    * @brief Update the ever-free state of all changed TSDF-voxels by checking

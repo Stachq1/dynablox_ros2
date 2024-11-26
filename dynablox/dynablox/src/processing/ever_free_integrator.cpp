@@ -13,8 +13,9 @@ namespace dynablox {
 
 using Timer = voxblox::timing::Timer;
 
-EverFreeIntegrator::EverFreeIntegrator(TsdfLayer::Ptr tsdf_layer)
-    : tsdf_layer_(std::move(tsdf_layer)),
+EverFreeIntegrator::EverFreeIntegrator(TsdfLayer::Ptr tsdf_layer, const EverFreeIntegrator::Config& config)
+    : config_(config),
+      tsdf_layer_(std::move(tsdf_layer)),
       neighborhood_search_(config_.neighbor_connectivity),
       voxel_size_(tsdf_layer_->voxel_size()),
       voxels_per_side_(tsdf_layer_->voxels_per_side()),
