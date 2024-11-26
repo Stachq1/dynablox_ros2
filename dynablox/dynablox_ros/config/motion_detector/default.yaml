@@ -3,16 +3,16 @@ motion_detector_node:
     # ----------- Motion Detector Parameters --------
 
     # General.
-    # evaluate: true # Set by launch file
-    # visualize: true # Set by launch file
-    # num_threads: 1  # Uses hardware concurrency if left empty.
+    evaluate: false
+    visualize: true
+    num_threads: 1  # Uses hardware concurrency if left empty.
     queue_size: 20
     shutdown_after: 10  # Number of evaluations.
 
     # Preprocessing.
     preprocessing:
       min_range: 0.5  # m
-      max_range: 20  # m
+      max_range: 20.0  # m
 
     # Ever-Free Integration.
     ever_free_integrator:
@@ -26,8 +26,8 @@ motion_detector_node:
     clustering:
       min_cluster_size: 20
       max_cluster_size: 200000
-      min_extent: 0   # m
-      max_extent: 200000   # m
+      min_extent: 0.0   # m
+      max_extent: 200000.0   # m
       neighbor_connectivity: 6
       grow_clusters_twice: false
       min_cluster_separation: 0.2
@@ -35,7 +35,7 @@ motion_detector_node:
     # Tracking.
     tracking:
       min_track_duration: 0 # frames
-      max_tracking_distance: 1  # m
+      max_tracking_distance: 1.0  # m
 
     # Evaluation.
     evaluation:
@@ -45,14 +45,16 @@ motion_detector_node:
       evaluate_cluster_level: true
       evaluate_object_level: true
       save_clouds: true  # For detailed inspection of results.
+      ground_truth_file_path: '/root/data/DOALS/hauptgebaeude/sequence_1/indices.csv'
+      output_directory': '/root/dynablox_output'
 
     # Visualization.
     visualization:
-      static_point_color: [0,0,0,1]
-      dynamic_point_color: [1,0,0.5,1]
-      out_of_bounds_color: [0,0,0,0.1]
-      ever_free_color: [1, 0, 1, 0.5]
-      never_free_color: [0, 1, 1, 0.5]
+      static_point_color: [0.0, 0.0, 0.0, 1.0]
+      dynamic_point_color: [1.0, 0.0, 0.5, 1.0]
+      out_of_bounds_color: [0.0, 0.0, 0.0, 0.1]
+      ever_free_color: [1.0, 0.0, 1.0, 0.5]
+      never_free_color: [0.0, 1.0, 1.0, 0.5]
       static_point_scale: 0.03
       dynamic_point_scale: 0.08
       sensor_scale: 0.5
