@@ -134,6 +134,12 @@ class MotionDetector {
   std::shared_ptr<voxblox::TsdfServer> tsdf_server_;
   std::shared_ptr<TsdfLayer> tsdf_layer_;
 
+  // Configs
+  Preprocessing::Config preprocessing_config_;
+  EverFreeIntegrator::Config ever_free_integrator_config_;
+  Clustering::Config clustering_config_;
+  Tracking::Config tracking_config_;
+
   // Processing.
   std::shared_ptr<Preprocessing> preprocessing_;
   std::shared_ptr<EverFreeIntegrator> ever_free_integrator_;

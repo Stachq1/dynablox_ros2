@@ -26,14 +26,16 @@ MotionDetector::MotionDetector(const rclcpp::Node::SharedPtr& nh,
       nh_private_(nh_private),
       tf_buffer_(nh_private_->get_clock()),
       tf_listener_(tf_buffer_) {
+
+  // Subscribe to topics and load parameters from config
+  setupRos();
+
+  // Setup Dynablox modules
   setupMembers();
 
   // Cache frequently used constants.
   voxels_per_side_ = tsdf_layer_->voxels_per_side();
   voxels_per_block_ = voxels_per_side_ * voxels_per_side_ * voxels_per_side_;
-
-  // Advertise and subscribe to topics.
-  setupRos();
 }
 
 void MotionDetector::setupMembers() {
@@ -44,17 +46,10 @@ void MotionDetector::setupMembers() {
   tsdf_server_ = std::make_shared<voxblox::TsdfServer>(nh_voxblox, nh_voxblox);
   tsdf_layer_.reset(tsdf_server_->getTsdfMapPtr()->getTsdfLayerPtr());
 
-  // Preprocessing.
+  // Initialize Dynablox modules.
   preprocessing_ = std::make_shared<Preprocessing>();
-
-  // Clustering.
   clustering_ = std::make_shared<Clustering>(tsdf_layer_);
-
-  // Tracking.
   tracking_ = std::make_shared<Tracking>();
-
-  // Ever-Free Integrator.
-  nh_private_->declare_parameter("ever_free_integrator.num_threads", config_.num_threads);
   ever_free_integrator_ = std::make_shared<EverFreeIntegrator>(tsdf_layer_);
 
   // Evaluation.
@@ -68,6 +63,49 @@ void MotionDetector::setupMembers() {
 }
 
 void MotionDetector::setupRos() {
+  // Preprocessing config
+  nh_private_->declare_parameter("preprocessing.max_range", preprocessing_config_.max_range);
+  nh_private_->declare_parameter("preprocessing.min_range", preprocessing_config_.min_range);
+  nh_private_->get_parameter("preprocessing.max_range", preprocessing_config_.max_range);
+  nh_private_->get_parameter("preprocessing.max_range", preprocessing_config_.min_range);
+
+  // Ever-Free Integrator config
+  nh_private_->declare_parameter("ever_free_integrator.neighbor_connectivity", ever_free_integrator_config_.neighbor_connectivity);
+  nh_private_->declare_parameter("ever_free_integrator.counter_to_reset", ever_free_integrator_config_.counter_to_reset);
+  nh_private_->declare_parameter("ever_free_integrator.temporal_buffer", ever_free_integrator_config_.temporal_buffer);
+  nh_private_->declare_parameter("ever_free_integrator.burn_in_period", ever_free_integrator_config_.burn_in_period);
+  nh_private_->declare_parameter("ever_free_integrator.tsdf_occupancy_threshold", ever_free_integrator_config_.tsdf_occupancy_threshold);
+  nh_private_->declare_parameter("ever_free_integrator.num_threads", ever_free_integrator_config_.num_threads);
+  nh_private_->get_parameter("ever_free_integrator.neighbor_connectivity", ever_free_integrator_config_.neighbor_connectivity);
+  nh_private_->get_parameter("ever_free_integrator.counter_to_reset", ever_free_integrator_config_.counter_to_reset);
+  nh_private_->get_parameter("ever_free_integrator.temporal_buffer", ever_free_integrator_config_.temporal_buffer);
+  nh_private_->get_parameter("ever_free_integrator.burn_in_period", ever_free_integrator_config_.burn_in_period);
+  nh_private_->get_parameter("ever_free_integrator.tsdf_occupancy_threshold", ever_free_integrator_config_.tsdf_occupancy_threshold);
+  nh_private_->get_parameter("ever_free_integrator.num_threads", ever_free_integrator_config_.num_threads);
+
+  // Clustering config
+  nh_private_->declare_parameter("clustering.min_cluster_size", clustering_config_.min_cluster_size);
+  nh_private_->declare_parameter("clustering.max_cluster_size", clustering_config_.max_cluster_size);
+  nh_private_->declare_parameter("clustering.min_extent", clustering_config_.min_extent);
+  nh_private_->declare_parameter("clustering.neighbor_connectivity", clustering_config_.neighbor_connectivity);
+  nh_private_->declare_parameter("clustering.grow_clusters_twice", clustering_config_.grow_clusters_twice);
+  nh_private_->declare_parameter("clustering.min_cluster_separation", clustering_config_.min_cluster_separation);
+  nh_private_->declare_parameter("clustering.check_cluster_separation_exact", clustering_config_.check_cluster_separation_exact);
+  nh_private_->get_parameter("clustering.min_cluster_size", clustering_config_.min_cluster_size);
+  nh_private_->get_parameter("clustering.max_cluster_size", clustering_config_.max_cluster_size);
+  nh_private_->get_parameter("clustering.min_extent", clustering_config_.min_extent);
+  nh_private_->get_parameter("clustering.neighbor_connectivity", clustering_config_.neighbor_connectivity);
+  nh_private_->get_parameter("clustering.grow_clusters_twice", clustering_config_.grow_clusters_twice);
+  nh_private_->get_parameter("clustering.min_cluster_separation", clustering_config_.min_cluster_separation);
+  nh_private_->get_parameter("clustering.check_cluster_separation_exact", clustering_config_.check_cluster_separation_exact);
+
+  // Tracking config
+  nh_private_->declare_parameter("tracking.min_track_duration", tracking_config_.min_track_duration);
+  nh_private_->declare_parameter("tracking.max_tracking_distance", tracking_config_.max_tracking_distance);
+  nh_private_->get_parameter("tracking.min_track_duration", tracking_config_.min_track_duration);
+  nh_private_->get_parameter("tracking.max_tracking_distance", tracking_config_.max_tracking_distance);
+
+  // Subscribe to pointcloud topic
   lidar_pcl_sub_ = nh_->create_subscription<sensor_msgs::msg::PointCloud2>(
     "pointcloud", rclcpp::QoS(config_.queue_size),
     [this](const sensor_msgs::msg::PointCloud2::SharedPtr msg) {
