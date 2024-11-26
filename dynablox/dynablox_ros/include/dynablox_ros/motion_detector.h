@@ -56,7 +56,7 @@ class MotionDetector {
   };
 
   // Constructor.
-  MotionDetector(const rclcpp::Node::SharedPtr& nh, const rclcpp::Node::SharedPtr& nh_private);
+  MotionDetector(const rclcpp::Node::SharedPtr& nh);
 
   // Setup.
   void setupMembers();
@@ -124,7 +124,6 @@ class MotionDetector {
 
   // ROS.
   rclcpp::Node::SharedPtr nh_;
-  rclcpp::Node::SharedPtr nh_private_;
   rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr lidar_pcl_sub_;
 
   tf2_ros::Buffer tf_buffer_;

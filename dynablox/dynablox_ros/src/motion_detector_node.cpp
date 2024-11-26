@@ -10,20 +10,15 @@ int main(int argc, char** argv) {
   google::InitGoogleLogging(argv[0]);
   google::InstallFailureSignalHandler();
 
+  // Create the single node instance
   auto nh = std::make_shared<rclcpp::Node>("motion_detector_node");
-  auto nh_private = std::make_shared<rclcpp::Node>("motion_detector_private");
-  auto tsdf_server = std::make_shared<dynablox::MotionDetector>(nh, nh_private);
 
-  // Create a MultiThreadedExecutor
-  rclcpp::executors::MultiThreadedExecutor executor;
+  // Create the MotionDetector object
+  auto tsdf_server = std::make_shared<dynablox::MotionDetector>(nh);
 
-  // Add both nodes to the executor
-  executor.add_node(nh);
-  executor.add_node(nh_private);
+  // Spin the node
+  rclcpp::spin(nh);  // Use spin() to keep the node running
 
-  // Spin both nodes simultaneously
-  executor.spin();
   rclcpp::shutdown();
-
   return 0;
 }
