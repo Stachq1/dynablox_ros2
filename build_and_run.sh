@@ -3,7 +3,7 @@
 # Function to clean and build the docker image
 clean_and_build() {
   # Clean existing images
-  docker system prune -y
+  docker system prune --force
   docker rmi dynablox
 
   # Build the docker container
