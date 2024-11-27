@@ -46,10 +46,10 @@ void MotionDetector::setupMembers() {
   tsdf_layer_.reset(tsdf_server_->getTsdfMapPtr()->getTsdfLayerPtr());
 
   // Initialize Dynablox modules.
-  preprocessing_ = std::make_shared<Preprocessing>();
-  clustering_ = std::make_shared<Clustering>(tsdf_layer_);
-  tracking_ = std::make_shared<Tracking>();
-  ever_free_integrator_ = std::make_shared<EverFreeIntegrator>(tsdf_layer_);
+  preprocessing_ = std::make_shared<Preprocessing>(preprocessing_config_);
+  clustering_ = std::make_shared<Clustering>(tsdf_layer_, clustering_config_);
+  tracking_ = std::make_shared<Tracking>(tracking_config_);
+  ever_free_integrator_ = std::make_shared<EverFreeIntegrator>(tsdf_layer_, ever_free_integrator_config_);
 
   // Evaluation.
   if (config_.evaluate) {
@@ -58,7 +58,7 @@ void MotionDetector::setupMembers() {
   }
 
   // Visualization.
-  visualizer_ = std::make_shared<MotionVisualizer>(nh_, tsdf_layer_);
+  visualizer_ = std::make_shared<MotionVisualizer>(nh_, tsdf_layer_, visualizer_config_);
 }
 
 void MotionDetector::setupRos() {
