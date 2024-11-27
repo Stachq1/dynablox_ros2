@@ -63,8 +63,8 @@ motion_detector_node:
       sensor_scale: 0.5
       color_clusters: true
       color_wheel_num_colors: 20
-      slice_height: -1
-      visualization_max_z: 100
+      slice_height: -1.0
+      visualization_max_z: 100.0
 
     # Voxblox parameters.
     voxblox:
