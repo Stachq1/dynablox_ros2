@@ -8,8 +8,10 @@
 namespace dynablox {
 
 MotionVisualizer::MotionVisualizer(rclcpp::Node::SharedPtr nh,
-                                   std::shared_ptr<TsdfLayer> tsdf_layer)
-      : nh_(std::move(nh)),
+                                   std::shared_ptr<TsdfLayer> tsdf_layer,
+                                   const Config& config)
+      : config_(config),
+        nh_(std::move(nh)),
         tsdf_layer_(std::move(tsdf_layer)) {
   color_map_.setItemsPerRevolution(config_.color_wheel_num_colors);
   // Setup mesh integrator.

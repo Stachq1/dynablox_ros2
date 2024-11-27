@@ -74,7 +74,7 @@ class MotionVisualizer {
   };
 
   // Setup.
-  MotionVisualizer(rclcpp::Node::SharedPtr nh, std::shared_ptr<TsdfLayer> tsdf_layer);
+  MotionVisualizer(rclcpp::Node::SharedPtr nh, std::shared_ptr<TsdfLayer> tsdf_layer, const Config& config = Config());
 
   void setupRos();
 
