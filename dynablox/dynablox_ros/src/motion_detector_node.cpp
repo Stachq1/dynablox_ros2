@@ -13,11 +13,34 @@ int main(int argc, char** argv) {
   // Create the single node instance
   auto nh = std::make_shared<rclcpp::Node>("motion_detector_node");
 
+  // Load MotionDetector parameters from the ROS parameter server
+  dynablox::MotionDetector::Config config;
+  nh->declare_parameter("evaluate", config.evaluate);
+  nh->declare_parameter("visualize", config.visualize);
+  nh->declare_parameter("verbose", config.verbose);
+  nh->declare_parameter("global_frame_name", config.global_frame_name);
+  nh->declare_parameter("sensor_frame_name", config.sensor_frame_name);
+  nh->declare_parameter("queue_size", config.queue_size);
+  nh->declare_parameter("num_threads", config.num_threads);
+  nh->declare_parameter("shutdown_after", config.shutdown_after);
+  nh->get_parameter("evaluate", config.evaluate);
+  nh->get_parameter("visualize", config.visualize);
+  nh->get_parameter("verbose", config.verbose);
+  nh->get_parameter("global_frame_name", config.global_frame_name);
+  nh->get_parameter("sensor_frame_name", config.sensor_frame_name);
+  nh->get_parameter("queue_size", config.queue_size);
+  nh->get_parameter("num_threads", config.num_threads);
+  nh->get_parameter("shutdown_after", config.shutdown_after);
+
+  if(config.num_threads < 1) {
+    config.num_threads = std::thread::hardware_concurrency();
+  }
+
   // Create the MotionDetector object
-  auto tsdf_server = std::make_shared<dynablox::MotionDetector>(nh);
+  auto tsdf_server = std::make_shared<dynablox::MotionDetector>(nh, config);
 
   // Spin the node
-  rclcpp::spin(nh);  // Use spin() to keep the node running
+  rclcpp::spin(nh);
 
   rclcpp::shutdown();
   return 0;

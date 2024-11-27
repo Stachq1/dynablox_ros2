@@ -5,8 +5,11 @@ motion_detector_node:
     # General.
     evaluate: false
     visualize: true
-    num_threads: 1  # Uses hardware concurrency if left empty.
+    verbose: false
+    num_threads: 0  # Uses hardware concurrency if set to 0
     queue_size: 20
+    global_frame_name: 'map'
+    sensor_frame_name: ''
     shutdown_after: 10  # Number of evaluations.
 
     # Preprocessing.

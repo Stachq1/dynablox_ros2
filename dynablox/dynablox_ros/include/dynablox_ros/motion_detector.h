@@ -32,31 +32,34 @@ class MotionDetector {
  public:
   // Config.
   struct Config {
+    Config() : evaluate(false), visualize(true), verbose(true), global_frame_name("map"), sensor_frame_name(""),
+               queue_size(1), num_threads(std::thread::hardware_concurrency()), shutdown_after(0) {}
+
     // If true evaluate the performance against GT.
-    bool evaluate = false;
+    bool evaluate;
 
     // Enable helper and debug visualizations.
-    bool visualize = true;
+    bool visualize;
 
     // Print additional information when running.
-    bool verbose = true;
+    bool verbose;
 
     // Frame names.
-    std::string global_frame_name = "map";
-    std::string sensor_frame_name = "";  // Takes msg header if empty, overrides msg header if set.
+    std::string global_frame_name;
+    std::string sensor_frame_name;  // Takes msg header if empty, overrides msg header if set.
 
     // Subscriber queue size.
-    int queue_size = 1;
+    int queue_size;
 
     // Number of threads to use.
-    int num_threads = std::thread::hardware_concurrency();
+    int num_threads;
 
     // If >0, shutdown after this many evaluated frames.
-    int shutdown_after = 0;
+    int shutdown_after;
   };
 
   // Constructor.
-  MotionDetector(const rclcpp::Node::SharedPtr& nh);
+  MotionDetector(const rclcpp::Node::SharedPtr& nh, const Config& config = Config());
 
   // Setup.
   void setupMembers();

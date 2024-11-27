@@ -20,8 +20,9 @@ namespace dynablox {
 
 using Timer = voxblox::timing::Timer;
 
-MotionDetector::MotionDetector(const rclcpp::Node::SharedPtr& nh)
-    : nh_(nh),
+MotionDetector::MotionDetector(const rclcpp::Node::SharedPtr& nh, const Config& config)
+    : config_(config),
+      nh_(nh),
       tf_buffer_(nh_->get_clock()),
       tf_listener_(tf_buffer_) {
 
