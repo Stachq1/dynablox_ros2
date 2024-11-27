@@ -135,7 +135,7 @@ void MotionDetector::setupRos() {
 
   // Subscribe to pointcloud topic
   lidar_pcl_sub_ = nh_->create_subscription<sensor_msgs::msg::PointCloud2>(
-    config_.pointclout_topic, rclcpp::QoS(config_.queue_size),
+    config_.pointcloud_topic, rclcpp::QoS(config_.queue_size),
     [this](const sensor_msgs::msg::PointCloud2::SharedPtr msg) {
         this->pointcloudCallback(msg);
     });
