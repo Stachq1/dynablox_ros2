@@ -8,6 +8,7 @@ motion_detector_node:
     verbose: false
     num_threads: 0  # Uses hardware concurrency if set to 0
     queue_size: 20
+    pointcloud_topic: '/pointcloud'
     global_frame_name: 'map'
     sensor_frame_name: ''
     shutdown_after: 10  # Number of evaluations.
