@@ -25,7 +25,7 @@ def generate_launch_description():
       'ros2', 'bag', 'play',
       LaunchConfiguration('bag_file'),
       '--rate', LaunchConfiguration('player_rate'),
-      '-d', '1'
+      '-d', '1', '--loop'
     ],
     output='screen',
     shell=False
