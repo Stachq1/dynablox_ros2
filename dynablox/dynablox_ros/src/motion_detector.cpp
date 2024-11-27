@@ -104,6 +104,35 @@ void MotionDetector::setupRos() {
   nh_->get_parameter("tracking.min_track_duration", tracking_config_.min_track_duration);
   nh_->get_parameter("tracking.max_tracking_distance", tracking_config_.max_tracking_distance);
 
+  // Visualization config
+  nh_->declare_parameter("visualization.static_point_color", visualizer_config_.static_point_color);
+  nh_->declare_parameter("visualization.dynamic_point_color", visualizer_config_.dynamic_point_color);
+  nh_->declare_parameter("visualization.out_of_bounds_color", visualizer_config_.out_of_bounds_color);
+  nh_->declare_parameter("visualization.ever_free_color", visualizer_config_.ever_free_color);
+  nh_->declare_parameter("visualization.never_free_color", visualizer_config_.never_free_color);
+  nh_->declare_parameter("visualization.static_point_scale", visualizer_config_.static_point_scale);
+  nh_->declare_parameter("visualization.dynamic_point_scale", visualizer_config_.dynamic_point_scale);
+  nh_->declare_parameter("visualization.sensor_scale", visualizer_config_.sensor_scale);
+  nh_->declare_parameter("visualization.color_clusters", visualizer_config_.color_clusters);
+  nh_->declare_parameter("visualization.color_wheel_num_colors", visualizer_config_.color_wheel_num_colors);
+  nh_->declare_parameter("visualization.slice_height", visualizer_config_.slice_height);
+  nh_->declare_parameter("visualization.visualization_max_z", visualizer_config_.visualization_max_z);
+  nh_->get_parameter("visualization.static_point_color", visualizer_config_.static_point_color);
+  nh_->get_parameter("visualization.dynamic_point_color", visualizer_config_.dynamic_point_color);
+  nh_->get_parameter("visualization.out_of_bounds_color", visualizer_config_.out_of_bounds_color);
+  nh_->get_parameter("visualization.ever_free_color", visualizer_config_.ever_free_color);
+  nh_->get_parameter("visualization.never_free_color", visualizer_config_.never_free_color);
+  nh_->get_parameter("visualization.static_point_scale", visualizer_config_.static_point_scale);
+  nh_->get_parameter("visualization.dynamic_point_scale", visualizer_config_.dynamic_point_scale);
+  nh_->get_parameter("visualization.sensor_scale", visualizer_config_.sensor_scale);
+  nh_->get_parameter("visualization.color_clusters", visualizer_config_.color_clusters);
+  nh_->get_parameter("visualization.color_wheel_num_colors", visualizer_config_.color_wheel_num_colors);
+  nh_->get_parameter("visualization.slice_height", visualizer_config_.slice_height);
+  nh_->get_parameter("visualization.visualization_max_z", visualizer_config_.visualization_max_z);
+
+  // Set visualization frame to be the same as the global frame
+  visualizer_config_.global_frame_name = config_.global_frame_name;
+
   // Subscribe to pointcloud topic
   lidar_pcl_sub_ = nh_->create_subscription<sensor_msgs::msg::PointCloud2>(
     "pointcloud", rclcpp::QoS(config_.queue_size),

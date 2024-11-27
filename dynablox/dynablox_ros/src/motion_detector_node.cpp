@@ -18,6 +18,7 @@ int main(int argc, char** argv) {
   nh->declare_parameter("evaluate", config.evaluate);
   nh->declare_parameter("visualize", config.visualize);
   nh->declare_parameter("verbose", config.verbose);
+  nh->declare_parameter("pointcloud_topic", config.pointcloud_topic);
   nh->declare_parameter("global_frame_name", config.global_frame_name);
   nh->declare_parameter("sensor_frame_name", config.sensor_frame_name);
   nh->declare_parameter("queue_size", config.queue_size);
@@ -26,6 +27,7 @@ int main(int argc, char** argv) {
   nh->get_parameter("evaluate", config.evaluate);
   nh->get_parameter("visualize", config.visualize);
   nh->get_parameter("verbose", config.verbose);
+  nh->get_parameter("pointcloud_topic", config.pointcloud_topic);
   nh->get_parameter("global_frame_name", config.global_frame_name);
   nh->get_parameter("sensor_frame_name", config.sensor_frame_name);
   nh->get_parameter("queue_size", config.queue_size);

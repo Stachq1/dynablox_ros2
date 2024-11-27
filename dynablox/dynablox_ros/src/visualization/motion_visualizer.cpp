@@ -735,8 +735,7 @@ geometry_msgs::msg::Vector3 MotionVisualizer::setScale(const float scale) {
   return msg;
 }
 
-std_msgs::msg::ColorRGBA MotionVisualizer::setColor(
-    const std::vector<float>& color) {
+std_msgs::msg::ColorRGBA MotionVisualizer::setColor(const std::vector<double>& color) {
   std_msgs::msg::ColorRGBA msg;
   msg.r = color[0];
   msg.g = color[1];

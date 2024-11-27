@@ -33,7 +33,7 @@ class MotionDetector {
   // Config.
   struct Config {
     Config() : evaluate(false), visualize(true), verbose(true), global_frame_name("map"), sensor_frame_name(""),
-               queue_size(1), num_threads(std::thread::hardware_concurrency()), shutdown_after(0) {}
+               pointcloud_topic("/pointcloud"), queue_size(1), num_threads(std::thread::hardware_concurrency()), shutdown_after(0) {}
 
     // If true evaluate the performance against GT.
     bool evaluate;
@@ -43,6 +43,9 @@ class MotionDetector {
 
     // Print additional information when running.
     bool verbose;
+
+    // Pointcloud topic name
+    std::string pointcloud_topic;
 
     // Frame names.
     std::string global_frame_name;
@@ -141,6 +144,7 @@ class MotionDetector {
   EverFreeIntegrator::Config ever_free_integrator_config_;
   Clustering::Config clustering_config_;
   Tracking::Config tracking_config_;
+  MotionVisualizer::Config visualizer_config_;
 
   // Processing.
   std::shared_ptr<Preprocessing> preprocessing_;

@@ -26,43 +26,51 @@ class MotionVisualizer {
  public:
   // Config.
   struct Config {
+    Config() : global_frame_name("map"), static_point_color({0.0, 0.0, 0.0, 1.0}), dynamic_point_color({1.0, 0.0, 0.50, 1.0}),
+               sensor_color({1.0, 0.0, 0.0, 1.0}), true_positive_color({0.0, 1.0, 0.0, 1.0}), false_positive_color({1.0, 0.0, 0.0, 1.0}),
+               true_negative_color({0.0, 0.0, 0.0, 1.0}), false_negative_color({0.0, 0.0, 1.0, 1.0}), out_of_bounds_color({0.7, 0.7, 0.7, 1.0}),
+               ever_free_color({1.0, 0.0, 1.0, 0.5}), never_free_color({0.0, 1.0, 1.0, 0.5}), point_level_slice_color({1.0, 0.0, 1.0, 1.0}),
+               cluster_level_slice_color({0.0, 1.0, 1.0, 1.0}), static_point_scale(0.1f), dynamic_point_scale(0.1f), sensor_scale(0.3f),
+               cluster_line_width(0.05f), color_wheel_num_colors(20), color_clusters(true), slice_height(0),
+               slice_relative_to_sensor(true), visualization_max_z(10000.f) {}
+
     std::string global_frame_name = "map";
 
     // Set RGBA colors in [0, 1] if wanted.
-    std::vector<float> static_point_color = {0.f, 0.f, 0.f, 1.f};
-    std::vector<float> dynamic_point_color = {1.f, 0.f, 0.5f, 1.f};
-    std::vector<float> sensor_color = {1.f, 0.f, 0.f, 1.f};
-    std::vector<float> true_positive_color = {0.f, 1.f, 0.f, 1.f};
-    std::vector<float> false_positive_color = {1.f, 0.f, 0.f, 1.f};
-    std::vector<float> true_negative_color = {0.f, 0.f, 0.f, 1.f};
-    std::vector<float> false_negative_color = {0.f, 0.f, 1.f, 1.f};
-    std::vector<float> out_of_bounds_color = {.7f, .7f, .7f, 1.f};
-    std::vector<float> ever_free_color = {1.f, 0.f, 1.f, .5f};
-    std::vector<float> never_free_color = {0.f, 1.f, 1.f, .5f};
-    std::vector<float> point_level_slice_color = {1.f, 0.f, 1.f, 1.f};
-    std::vector<float> cluster_level_slice_color = {0.f, 1.f, 1.f, 1.f};
+    std::vector<double> static_point_color;
+    std::vector<double> dynamic_point_color ;
+    std::vector<double> sensor_color;
+    std::vector<double> true_positive_color;
+    std::vector<double> false_positive_color;
+    std::vector<double> true_negative_color;
+    std::vector<double> false_negative_color;
+    std::vector<double> out_of_bounds_color;
+    std::vector<double> ever_free_color;
+    std::vector<double> never_free_color;
+    std::vector<double> point_level_slice_color;
+    std::vector<double> cluster_level_slice_color;
 
     // Scales of visualizations [m].
-    float static_point_scale = 0.1f;
-    float dynamic_point_scale = 0.1f;
-    float sensor_scale = 0.3f;
-    float cluster_line_width = 0.05f;
+    float static_point_scale;
+    float dynamic_point_scale;
+    float sensor_scale;
+    float cluster_line_width;
 
     // Number of colors for the a full color wheel revolution.
-    int color_wheel_num_colors = 20;
+    int color_wheel_num_colors;
 
     // True: every cluster and object has a color, False: just mark them as
     // dynamic.
-    bool color_clusters = true;
+    bool color_clusters;
 
     // Height in map frame of the slice being visualized [m].
-    float slice_height = 0;
+    float slice_height;
 
     // True: slice height is relative to the sensor, False: slice in world frame
-    bool slice_relative_to_sensor = true;
+    bool slice_relative_to_sensor;
 
     // Crop all visualizations at this height for better visibility.
-    float visualization_max_z = 10000.f;
+    float visualization_max_z;
   };
 
   // Setup.
@@ -96,7 +104,7 @@ class MotionVisualizer {
 
   // ROS msg helper tools.
   static geometry_msgs::msg::Vector3 setScale(const float scale);
-  static std_msgs::msg::ColorRGBA setColor(const std::vector<float>& color);
+  static std_msgs::msg::ColorRGBA setColor(const std::vector<double>& color);
   static std_msgs::msg::ColorRGBA setColor(const voxblox::Color& color);
   static geometry_msgs::msg::Point setPoint(const Point& point);
   static geometry_msgs::msg::Point setPoint(const voxblox::Point& point);
