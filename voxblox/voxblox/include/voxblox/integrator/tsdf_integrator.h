@@ -59,11 +59,11 @@ class TsdfIntegratorBase {
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
     float default_truncation_distance = 0.1;
-    float max_weight = 10000.0;
+    float max_weight = 1000.0;
     bool voxel_carving_enabled = true;
-    FloatingPoint min_ray_length_m = 0.1;
-    FloatingPoint max_ray_length_m = 5.0;
-    bool use_const_weight = false;
+    FloatingPoint min_ray_length_m = 0.5;
+    FloatingPoint max_ray_length_m = 20.0;
+    bool use_const_weight = true;
     bool allow_clear = true;
     bool use_weight_dropoff = true;
     bool use_sparsity_compensation_factor = false;
@@ -87,9 +87,9 @@ class TsdfIntegratorBase {
     /// fast integrator specific
     float max_integration_time_s = std::numeric_limits<float>::max();
     // projective integrator specific
-    int sensor_horizontal_resolution = 0;
-    int sensor_vertical_resolution = 0;
-    double sensor_vertical_field_of_view_degrees = 0.0;
+    int sensor_horizontal_resolution = 2048;
+    int sensor_vertical_resolution = 64;
+    double sensor_vertical_field_of_view_degrees = 33.22222;
 
     std::string print() const;
   };

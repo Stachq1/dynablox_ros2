@@ -58,7 +58,7 @@ inline ICP::Config getICPConfigFromRosParam(const rclcpp::Node::SharedPtr& node)
 inline TsdfIntegratorBase::Config getTsdfIntegratorConfigFromRosParam(const rclcpp::Node::SharedPtr& node) {
     TsdfIntegratorBase::Config integrator_config;
 
-    integrator_config.default_truncation_distance = 0.2 * 4; // TODO: 0.2 should be voxel_size!!!!!
+    integrator_config.default_truncation_distance = 0.2 * 2; // TODO: 0.2 should be voxel_size!!!!!
     int integrator_threads = static_cast<int>(integrator_config.integrator_threads);
 
     node->declare_parameter<bool>("voxel_carving_enabled", integrator_config.voxel_carving_enabled);
